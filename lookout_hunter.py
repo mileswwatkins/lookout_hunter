@@ -74,7 +74,8 @@ def get_facility_availability(facility_id):
     AVAILABILITY_URL = 'https://www.recreation.gov/api/camps/availability/campground/{facility_id}/month?start_date={year}-{month}-01T00:00:00.000Z'
 
     date_to_check = datetime.date.today()
-    for _ in range(6):
+    MONTHS_TO_LOOK_AHEAD = 7
+    for _ in range(MONTHS_TO_LOOK_AHEAD):
         time.sleep(SECONDS_BETWEEN_REQUESTS)
 
         logger.debug("Querying availability for facility {} for {}/{}".format(facility_id, date_to_check.month, date_to_check.year))
@@ -129,7 +130,11 @@ def display_facility_availability(metadata, rates, availability):
     NOT_AVAIALABLE_CODES = [
         'Reserved',
         'Not Reservable',
-        'Not Available Cutoff'
+        'Not Available',
+        'Not Available Cutoff',
+        # Ironic, right? This code appears to be used to describe
+        # "will be open but not yet available to be booked"
+        'Open'
     ]
 
     try:
