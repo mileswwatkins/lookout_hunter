@@ -1,6 +1,8 @@
 Lookout Hunter
 ---
 
+![](lookout.png)
+
 [Fire lookout towers](https://en.wikipedia.org/wiki/Fire_lookout_tower) are scattered across the public lands, especially in the American West. Many of these towers have been decommissioned, their function replaced by satellite and areal imagery. And some of such decommissioned towers are now available to rent via recreation.gov!
 
 Using [a list assembled by the Forest Fire Lookout Association](https://www.firelookout.org/lookout-rentals.html), the scraper in this repository finds all available rental dates over the coming months, as well as metadata such as city, state, and nightly cost. A recreation.gov URL is provided to view and book each facility.
@@ -34,7 +36,3 @@ Found available dates for Black Mountain Lookout
 ```
 
 (Switching the logging level to `logging.DEBUG` displays additional information, such as which sites have _no_ available nights.)
-
-### Credit
-
-[README image from recreation.gov, of Pickett Butte Lookout.](https://www.recreation.gov/camping/campgrounds/234149)
