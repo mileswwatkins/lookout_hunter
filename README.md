@@ -1,7 +1,7 @@
 Lookout Hunter
 ---
 
-![](lookout.png)
+![](lookout.jpg)
 
 [Fire lookout towers](https://en.wikipedia.org/wiki/Fire_lookout_tower) are scattered across the public lands, especially in the American West. Many of these towers have been decommissioned, their function replaced by satellite and areal imagery. And some of such decommissioned towers are now available to rent via recreation.gov!
 
