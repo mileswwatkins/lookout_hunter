@@ -34,3 +34,7 @@ Found available dates for Black Mountain Lookout
 ```
 
 (Switching the logging level to `logging.DEBUG` displays additional information, such as which sites have _no_ available nights.)
+
+### Credit
+
+[README image from recreation.gov, of Pickett Butte Lookout.](https://www.recreation.gov/camping/campgrounds/234149)
