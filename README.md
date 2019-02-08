@@ -5,8 +5,6 @@ Lookout Hunter
 
 Using [a list assembled by the Forest Fire Lookout Association](https://www.firelookout.org/lookout-rentals.html), the scraper in this repository finds all available rental dates over the coming months, as well as metadata such as city, state, and nightly cost. A recreation.gov URL is provided to view and book each facility.
 
-(Switching the logging level to `logging.DEBUG` displays additional information, such as which sites have _no_ available nights.)
-
 ### Requirements
 
 - Python 3
@@ -34,3 +32,5 @@ Found available dates for Black Mountain Lookout
     ['Jun 22', 'Jun 23', 'Jun 24', 'Jun 27', 'Jun 28', 'Jun 29', 'Jun 30']
 ...
 ```
+
+(Switching the logging level to `logging.DEBUG` displays additional information, such as which sites have _no_ available nights.)
