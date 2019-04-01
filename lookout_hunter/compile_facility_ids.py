@@ -63,4 +63,6 @@ if __name__ == '__main__':
     ])
 
     with open('compiled_facility_ids.txt', 'w') as file:
-        file.write('\n'.join(facility_ids))
+        # Sort the facility IDs so that it's easier to read
+        # git diffs when the list changes
+        file.write('\n'.join(sorted(facility_ids)))
