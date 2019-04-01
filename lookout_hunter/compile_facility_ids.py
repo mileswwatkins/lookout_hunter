@@ -1,7 +1,9 @@
 #! /usr/bin/env python3
 
 import logging
+import os
 import re
+import sys
 import time
 
 import lxml.html
@@ -49,7 +51,7 @@ def get_firelookoutorg_ids():
 
 
 def get_manually_entered_ids():
-    with open('manually_entered_facility_ids.txt', 'r') as file:
+    with open(os.path.join(sys.path[0], 'manually_entered_facility_ids.txt'), 'r') as file:
         return file.read().split('\n')
 
 
@@ -62,7 +64,7 @@ if __name__ == '__main__':
         if lookout_id
     ])
 
-    with open('compiled_facility_ids.txt', 'w') as file:
+    with open(os.path.join(sys.path[0], 'compiled_facility_ids.txt'), 'w') as file:
         # Sort the facility IDs so that it's easier to read
         # git diffs when the list changes
         file.write('\n'.join(sorted(facility_ids)))

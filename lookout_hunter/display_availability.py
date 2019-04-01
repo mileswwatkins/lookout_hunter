@@ -2,6 +2,8 @@
 
 import datetime
 import logging
+import os
+import sys
 import time
 
 import dateutil.relativedelta
@@ -17,7 +19,7 @@ logger.setLevel(logging.INFO)
 
 def get_facility_ids():
     ''' Load facility IDs from the compiled scraped list '''
-    with open('compiled_facility_ids.txt', 'r') as file:
+    with open(os.path.join(sys.path[0], 'compiled_facility_ids.txt'), 'r') as file:
         return file.read().split('\n')
 
 
