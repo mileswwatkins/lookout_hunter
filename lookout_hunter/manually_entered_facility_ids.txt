@@ -1,0 +1,8 @@
+# Additional facility IDs sourced from http://www.nhlr.org/lookouts/us
+# This website doesn't contain links to Recreation.gov, so can't
+# easily be scraped
+232349
+234131
+234143
+234161
+234163

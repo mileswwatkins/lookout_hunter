@@ -87,8 +87,14 @@ def get_manually_entered_ids():
     logger.info("Reading manually-entered facility IDs")
 
     with open(os.path.join(sys.path[0], 'manually_entered_facility_ids.txt'), 'r') as file:
-        # Need to ignore empty lines that are read as IDs
-        facility_ids = [f_id for f_id in file.read().split('\n') if f_id]
+        facility_ids = [
+            facility_id
+            for facility_id
+            in file.read().split('\n')
+            # Need to prevent empty lines and comments from
+            # being read as IDs
+            if facility_id and not facility_id.startswith('#')
+        ]
 
     logger.info("Found {} IDs".format(len(facility_ids)))
     return facility_ids
