@@ -1,5 +1,6 @@
 #! /usr/bin/env python3
 
+import json
 import logging
 import os
 import re
@@ -24,6 +25,8 @@ def get_firelookoutorg_ids():
     capture the ID tailing the URL, eg, `234247` from
     https://www.recreation.gov/camping/campgrounds/234247
     '''
+    logger.info("Fetching facility IDs from firelookout.org")
+
     LISTING_URL = 'https://www.firelookout.org/lookout-rentals.html'
     listing_page = requests.get(LISTING_URL)
     listing_doc = lxml.html.fromstring(listing_page.content)
@@ -47,22 +50,57 @@ def get_firelookoutorg_ids():
             facility_id = search.group(1)
             facility_ids.append(facility_id)
 
+    logger.info("Found {} IDs".format(len(facility_ids)))
+    return facility_ids
+
+
+def get_recreationgov_search_ids():
+    '''
+    Use Recreation.gov's search interface to gather facility
+    IDs that have been formally tagged as `Lookout`
+    '''
+    logger.info("Fetching facility IDs from the Recreation.gov search tool")
+
+    SEARCH_URL = 'https://www.recreation.gov/api/search'
+    SEARCH_PARAMS = {
+        # The `fq` parameter key is used twice, which is allowed
+        'fq': [
+            'campsite_type:LOOKOUT',
+            # Exclude non-camping overlook locations, such as
+            # https://www.recreation.gov/camping/campgrounds/234489
+            'campsite_type_of_use:Overnight'
+        ]
+    }
+    # Programmatic requests without a browser-looking User Agent
+    # string will receive `403` responses
+    SEARCH_HEADERS = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0'}
+
+    response = requests.get(SEARCH_URL, params=SEARCH_PARAMS, headers=SEARCH_HEADERS)
+    data = json.loads(response.content)
+    facility_ids = [result['entity_id'] for result in data['results']]
+
+    logger.info("Found {} IDs".format(len(facility_ids)))
     return facility_ids
 
 
 def get_manually_entered_ids():
+    logger.info("Reading manually-entered facility IDs")
+
     with open(os.path.join(sys.path[0], 'manually_entered_facility_ids.txt'), 'r') as file:
-        return file.read().split('\n')
+        # Need to ignore empty lines that are read as IDs
+        facility_ids = [f_id for f_id in file.read().split('\n') if f_id]
+
+    logger.info("Found {} IDs".format(len(facility_ids)))
+    return facility_ids
 
 
 if __name__ == '__main__':
     # Write all facility IDs to a single, newline-delimited file
-    facility_ids = set([
-        lookout_id for lookout_id in
+    facility_ids = set(
         get_manually_entered_ids() +
-        get_firelookoutorg_ids()
-        if lookout_id
-    ])
+        get_firelookoutorg_ids() +
+        get_recreationgov_search_ids()
+    )
 
     with open(os.path.join(sys.path[0], 'compiled_facility_ids.txt'), 'w') as file:
         # Sort the facility IDs so that it's easier to read
