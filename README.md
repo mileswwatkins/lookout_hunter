@@ -9,9 +9,9 @@ This repository finds all available rental dates over the coming months, as well
 
 ### Requirements
 
-- Python 3
-- `libxml2`
+- Python 3 and `pip`
 - `pip install -r requirements.txt`
+- `libxml2`
 
 ### Running
 
