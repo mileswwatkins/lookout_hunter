@@ -61,8 +61,12 @@ def get_facility_availability(facility_id):
 
         campsites = response.json()['campsites']
         # Since these are special-case campgrounds for
-        # recreation.gov, they all have just a single campsite
-        campsite_id = list(campsites.keys())[0]
+        # recreation.gov, they all have just a single campsite.
+        # Or sometimes there are no sites at all, temporarily.
+        if campsites:
+            campsite_id = list(campsites.keys())[0]
+        else:
+            return {}
         month_availabilities = campsites[campsite_id]['availabilities']
         datetime_availabilities = {datetime.datetime.strptime(k, '%Y-%m-%dT00:00:00Z'): v for k, v in month_availabilities.items()}
         availabilities.update(datetime_availabilities)
