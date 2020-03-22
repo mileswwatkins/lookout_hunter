@@ -2,6 +2,7 @@
 
 import datetime
 import logging
+import operator
 import os
 import sys
 import time
@@ -66,6 +67,7 @@ def get_facility_availability(facility_id):
         if campsites:
             campsite_id = list(campsites.keys())[0]
         else:
+            logger.debug('Found no campsites for facility {}')
             return {}
         month_availabilities = campsites[campsite_id]['availabilities']
         datetime_availabilities = {datetime.datetime.strptime(k, '%Y-%m-%dT00:00:00Z'): v for k, v in month_availabilities.items()}
@@ -121,7 +123,7 @@ def display_facility_availability(metadata, rates, availability):
     assert min_consecutive_stay <= 2
 
     filtered = []
-    for day, code in availability.items():
+    for day, code in sorted(availability.items(), key=operator.itemgetter(0)):
         if code in NOT_AVAIALABLE_CODES:
             continue
         elif min_consecutive_stay == 2 and \

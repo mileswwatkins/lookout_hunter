@@ -40,8 +40,11 @@ def get_firelookoutorg_ids():
         # http://www.gorp.com/hiking-guide/travel-ta-hiking-washington-oregon-camping-sidwcmdev_057030.html
         try:
             response = requests.get(link, headers=config.FAKE_USER_AGENT_HEADER, timeout=config.REQUEST_TIMEOUT_SECONDS)
-        except requests.exceptions.Timeout:
-            logger.debug("Server timed out from request to {}".format(link))
+        except (
+            requests.exceptions.Timeout,
+            requests.exceptions.ConnectionError
+        ):
+            logger.warning("Server timed out from request to {}".format(link))
             continue
         redirected_url = response.url
         logger.debug("Redirected to {}".format(redirected_url))
