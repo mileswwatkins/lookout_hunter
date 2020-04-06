@@ -1,0 +1,40 @@
+.App {
+  text-align: center;
+}
+
+.Map-Popup {
+  max-height: 150px;
+  overflow: auto;
+  margin-top: 8px;
+}
+
+.Map-Popup-header {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.Map-Popup-body {
+  font-size: 12px;
+  margin-top: 16px;
+  margin-bottom: 0;
+}
+
+.Map-Popup-list {
+  margin-top: 6px;
+  margin-bottom: 0;
+}
+
+.Map-circle {
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+  background: #d00;
+}
+
+.Map-circle__active {
+  background: #d00;
+}
+
+.Map-circle__inactive {
+  background: #6e6e6e;
+}

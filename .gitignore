@@ -1,4 +1,12 @@
+# Python
 __pycache__
-.DS_Store
 *.pyc
-lookout_hunter/availability.json
+
+# Node
+node_modules
+
+# macOS
+.DS_Store
+
+# Data
+*/availability.json

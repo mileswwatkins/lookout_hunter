@@ -5,9 +5,13 @@ Lookout Hunter
 
 [Fire lookout towers](https://en.wikipedia.org/wiki/Fire_lookout_tower) are scattered across public lands in [almost every American state](http://www.nhlr.org/lookouts/), and are especially prevalent on public lands in the Mountain West. Many of these towers have been decommissioned, their function replaced by satellite and areal imagery. And some of these decommissioned towers are now available to rent via Recreation.gov!
 
-This repository finds all available rental dates over the coming months, as well as metadata such as city, state, and nightly cost. A Recreation.gov URL is provided to view and book each facility.
+The data-processing portion of this repository finds all available rental dates over the coming months, as well as metadata about the site.
 
-### Requirements
+The web front-end portion of this repository visualizes and facilitates searching for rental availabilities from this data.
+
+## Data processing
+
+### Requirements and setup
 
 - Python and `pip`
 - `pip install -r requirements.txt`
@@ -291,9 +295,34 @@ Use `./lookout_hunter/get_availability.py` to fetch up-to-date information about
 }
 ```
 
-### Contributing `facility_id`s
+### Contributing new lookouts
 
 All currently-known Recreation.gov `facility_id`s for this project are stored within `compiled_facility_ids.txt`. If you know of any _additional_ IDs, please add them!
 
 - If they're one-off additions, simply add them to the `lookout_hunter/manually_entered_facility_ids.txt` file, one ID per line, with a comment (starting with `#`) on where the IDs were sourced from
 - If you have an entirely new data source, you can add a scraper for that in `lookout_hunter/compile_facility_ids.py`, and commit any changes to the `lookout_hunter/compiled_facility_ids.txt` file as well. Alternatively, if you're not comfortable writing a Python scraper, you can let me know about the data source by [filing a GitHub Issue](https://github.com/mileswwatkins/lookout_hunter/issues)!
+
+## Web front-end
+
+### Requirements and setup
+
+- Node 12 and `yarn`
+- `yarn`
+
+### Running
+
+#### `yarn start`
+
+Runs the app in the development mode.
+
+Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+
+The page will reload if you make edits.
+
+You will also see any lint errors in the console.
+
+#### `yarn build`
+
+Builds the app for production to the `build` folder.
+
+It correctly bundles React in production mode and optimizes the build for the best performance.

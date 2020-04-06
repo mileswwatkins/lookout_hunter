@@ -73,6 +73,8 @@ def get_facility_metadata(facility_id):
     del campground_metadata['updated_date']
 
     # Throw out fields that are predicable or duplicative
+    # Address is just the ranger station's address
+    del campground_metadata['addresses']
     if 'amenities' in campground_metadata:
         del campground_metadata['amenities']
     assert campground_metadata['facility_adaaccess'] == 'N'
@@ -94,7 +96,7 @@ def get_facility_metadata(facility_id):
     # Restructure or simplify complex fields
     campground_metadata['activities'] = [i['activity_description'] for i in campground_metadata['activities']]
     campground_metadata['links'] = [{'title': i['title'], 'url': i['url']} for i in campground_metadata['links']]
-    campground_metadata['notices'] = [{'type': i['notice_type'], 'text': i['notice_text']} for i in campground_metadata['notices']] if 'notices' in campground_metadata else []
+    campground_metadata['notices'] = [i['notice_text'] for i in campground_metadata['notices']] if 'notices' in campground_metadata else []
 
     return campground_metadata
 
