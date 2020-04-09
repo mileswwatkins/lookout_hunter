@@ -1,18 +1,27 @@
-import {parse, format} from 'date-fns'
+import {parse, format, isValid} from 'date-fns'
 import React, { Component, Fragment } from 'react';
 import ReactMapGL, { Marker, Popup } from 'react-map-gl';
+import DatePicker from "react-datepicker";
 import data from './availability.json';
+import "react-datepicker/dist/react-datepicker.css";
 import './App.css';
 
-const reformatDate = date => {
-  const datetime = parse(date, 'yyyy-MM-dd', new Date())
-  return format(datetime, 'MMMM d (E)')
+const parseAvailabilityDate = dateString => parse(dateString, 'yyyy-MM-dd', new Date())
+
+const reformatDate = dateString => {
+  const date = parseAvailabilityDate(dateString)
+  return format(date, 'MMMM d (E)')
 }
 
 const formatFacilityName = name => {
-  // A few sites have ` RENTAL` at the end of their names,
-  // which is redundant
-  return name.replace(/ RENTAL$/, '')
+  return name
+    // A few sites have ` RENTAL` at the end of their names,
+    // which is redundant
+    .replace(/ RENTAL$/, '')
+    .replace('MTN.', 'MOUNTAIN')
+    .replace('MT.', 'MOUNT')
+    // There are a few remaining periods that don't make sense
+    .replace('. ', ' ')
 }
 
 class App extends Component {
@@ -26,26 +35,30 @@ class App extends Component {
         longitude: -122.4376,
         zoom: 5
       },
-      popup: {
-        visible: false,
-        info: null,
-        location: {
-          latitude: null,
-          longitude: null
-        }
-      },
-      filter: {...this.initialFilterState}
+      popup: {...this.initialPopupState},
+      filters: {...this.initialFiltersState}
     }
   }
 
-  initialFilterState = {
+  initialPopupState = {
+    visible: false,
+    info: null,
+    location: {
+      latitude: null,
+      longitude: null
+    }
+  }
+
+  initialFiltersState = {
     maxRate: '',
-    consecutiveDays: ''
+    consecutiveDays: '',
+    afterDate: null,
+    beforeDate: null
   }
 
   onReset = e => {
     e.preventDefault()
-    this.setState({filter: {...this.initialFilterState}})
+    this.setState({filters: {...this.initialFiltersState}})
   }
 
   render () {
@@ -58,8 +71,8 @@ class App extends Component {
               min={Math.min(...data.map(i => i.rate).filter(i => i !== null))}
               max={Math.max(...data.map(i => i.rate))}
               step={1}
-              value={this.state.filter.maxRate}
-              onChange={e => this.setState({filter: {...this.state.filter, maxRate: e.target.value}})}
+              value={this.state.filters.maxRate}
+              onChange={e => this.setState({filters: {...this.state.filters, maxRate: e.target.value}})}
             ></input>
           </label>
 
@@ -69,14 +82,54 @@ class App extends Component {
               min={1}
               max={Math.max(...data.filter(i => i.metadata.facility_rules.maxConsecutiveStay).map(i => i.metadata.facility_rules.maxConsecutiveStay.value))}
               step={1}
-              value={this.state.filter.consecutiveDays}
-              onChange={e => this.setState({filter: { ...this.state.filter, consecutiveDays: e.target.value}})}
+              value={this.state.filters.consecutiveDays}
+              onChange={e => this.setState({filters: { ...this.state.filters, consecutiveDays: e.target.value}})}
              ></input>
+          </label>
+
+          <label>After date:{'\u00A0'}
+            <DatePicker
+              selected={this.state.filters.afterDate}
+              onChange={afterDate => this.setState({filters: {...this.state.filters, afterDate}})}
+              minDate={new Date()}
+              maxDate={this.state.filters.beforeDate}
+              dateFormat='MMMM d yyyy'
+            />
+          </label>
+
+          <label>Before date:{'\u00A0'}
+            <DatePicker
+              selected={this.state.filters.beforeDate}
+              onChange={beforeDate => this.setState({ filters: { ...this.state.filters, beforeDate } })}
+              minDate={this.state.filters.afterDate || new Date()}
+              maxDate={
+                parseAvailabilityDate(
+                  data
+                    .filter(i => i.availability !== null)
+                    .map(i => Object.entries(i.availability))
+                    .reduce((accumulator, i) => accumulator.concat(i), [])
+                    .filter(([dateString, available]) => available)
+                    .reduce(
+                      (accumulator, [dateString]) => {
+                        if (!accumulator) {
+                          return dateString
+                        } else {
+                          return accumulator.localeCompare(dateString) < 0
+                            ? dateString
+                            : accumulator
+                        }
+                      },
+                      null
+                    )
+                )
+              }
+              dateFormat='MMMM d yyyy'
+            />
           </label>
 
           <input
             type="reset"
-            value="Remove search filters"
+            value="Remove filters"
             onClick={this.onReset}
           ></input>
         </form>
@@ -95,31 +148,55 @@ class App extends Component {
                 longitude={i.metadata.facility_longitude}
               >
                 <div
-                  className={'Map-circle ' + (
-                    i.availability !== null &&
-                    Object.values(i.availability).some(v => v) &&
+                  className={'Map-circle ' +
                     (
-                      !this.state.filter.maxRate || (
-                        !isNaN(this.state.filter.maxRate) &&
-                        !isNaN(i.rate) &&
-                        i.rate <= this.state.filter.maxRate
-                      )
-                    ) &&
+                      i.metadata.facility_latitude === this.state.popup.location.latitude &&
+                      i.metadata.facility_longitude === this.state.popup.location.longitude
+                        ? 'Map-circle__selected '
+                        : ''
+                    ) +
                     (
-                      !this.state.filter.consecutiveDays || (
-                        Number.isInteger(this.state.filter.consecutiveDays) &&
-                        i.availability !== null &&
-                        Object.values(i.availability).reduce((accumulator, _, index, array) => {
-                          return accumulator || (
-                            index - (this.state.filter.consecutiveDays - 1) >= 0 &&
-                            array.slice(index - (this.state.filter.consecutiveDays - 1), index + 1).every(v => v)
-                          )
-                        }, false)
+                      i.availability !== null &&
+                      Object.values(i.availability).some(v => v) &&
+                      (
+                        !this.state.filters.maxRate || (
+                          !isNaN(this.state.filters.maxRate) &&
+                          !isNaN(i.rate) &&
+                          i.rate <= this.state.filters.maxRate
+                        )
+                      ) &&
+                      (
+                        !this.state.filters.consecutiveDays || (
+                          !isNaN(this.state.filters.consecutiveDays) &&
+                          i.availability !== null &&
+                          Object.values(i.availability).reduce((accumulator, _, index, array) => {
+                            return accumulator || (
+                              index - (this.state.filters.consecutiveDays - 1) >= 0 &&
+                              array.slice(index - (this.state.filters.consecutiveDays - 1), index + 1).every(v => v)
+                            )
+                          }, false)
+                        )
+                      ) &&
+                      (
+                        !this.state.filters.afterDate || (
+                          isValid(this.state.filters.afterDate) &&
+                          Object.entries(i.availability)
+                            .filter(([date, availability]) => availability)
+                            .some(([date]) => parseAvailabilityDate(date) >= this.state.filters.afterDate)
+                        )
+                      ) &&
+                      (
+                        !this.state.filters.beforeDate || (
+                          isValid(this.state.filters.beforeDate) &&
+                          Object.entries(i.availability)
+                            .filter(([date, availability]) => availability)
+                            .some(([date]) => parseAvailabilityDate(date) <= this.state.filters.beforeDate)
+                        )
                       )
+                        ? 'Map-circle__active '
+                        : 'Map-circle__inactive '
                     )
-                      ? 'Map-circle__active'
-                      : 'Map-circle__inactive'
-                  )}
+                  }
                   onClick={e => {
                     this.setState({
                       popup: {
@@ -141,8 +218,9 @@ class App extends Component {
             this.state.popup.visible &&
             <Popup
               {...this.state.popup.location}
+              closeOnClick={false}
               closeButton={true}
-              onClose={() => this.setState({ popup: { visible: false } })}
+              onClose={() => this.setState({popup: {...this.initialPopupState}})}
               tipSize={0}
               offsetTop={-10}
               anchor='bottom'
@@ -151,14 +229,20 @@ class App extends Component {
             >
               <div className='Map-Popup'>
                 <span className='Map-Popup-header'>
-                  {formatFacilityName(this.state.popup.info.metadata.facility_name)}
+                  <a
+                    href={`https://www.recreation.gov/camping/campgrounds/${this.state.popup.info.metadata.facility_id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {formatFacilityName(this.state.popup.info.metadata.facility_name)}
+                  </a>
                 </span>
                 <div className='Map-Popup-body'>
                   {
                     (this.state.popup.info.availability === null || Object.keys(this.state.popup.info.availability).length === 0)
-                      ? <span>Facility is closed</span>
+                      ? <span className='Map-Popup-body__unavailable'>Facility is closed</span>
                       : Object.values(this.state.popup.info.availability).every(v => !v)
-                        ? <span>No availability found</span>
+                        ? <span className='Map-Popup-body__unavailable'>No availability found</span>
                         : <Fragment>
                             <span>Available:</span>
                             <ul className='Map-Popup-list'>
