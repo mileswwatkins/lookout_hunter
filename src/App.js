@@ -31,9 +31,9 @@ class App extends Component {
       viewport: {
         width: "100vw",
         height: "90vh",
-        latitude: 37.7577,
-        longitude: -122.4376,
-        zoom: 5
+        latitude: 45,
+        longitude: -118,
+        zoom: 4.5
       },
       popup: {...this.initialPopupState},
       filters: {...this.initialFiltersState}
@@ -56,23 +56,90 @@ class App extends Component {
     beforeDate: null
   }
 
+  onChangemaxRate = e => {
+    this.setState({
+      filters: {
+        ...this.state.filters,
+        maxRate: e.target.value
+      }
+    })
+  }
+
+  onChangeConsecutiveDays = e => {
+    this.setState({
+      filters: {
+        ...this.state.filters,
+        consecutiveDays: e.target.value
+      }
+    })
+  }
+
+  onChangeAfterDate = afterDate => {
+    this.setState({
+      filters: {
+        ...this.state.filters,
+        afterDate
+      }
+    })
+  }
+
+  onChangeBeforeDate = beforeDate => {
+    this.setState({
+      filters: {
+        ...this.state.filters,
+        beforeDate
+      }
+    })
+  }
+
   onReset = e => {
     e.preventDefault()
     this.setState({filters: {...this.initialFiltersState}})
   }
 
   render () {
+    const maxRateMin = Math.min(...data.map(i => i.rate)
+      .filter(i => i !== null))
+    const maxRateMax = Math.max(...data.map(i => i.rate))
+
+    const consecutiveDaysMax = Math.max(
+      ...data
+        .filter(i => i.metadata.facility_rules.maxConsecutiveStay)
+        .map(i => i.metadata.facility_rules.maxConsecutiveStay.value)
+    )
+
+    const beforeDateMin = this.state.filters.afterDate || new Date()
+    const beforeDateMax = parseAvailabilityDate(
+      data
+        .filter(i => i.availability !== null)
+        .map(i => Object.entries(i.availability))
+        .reduce((accumulator, i) => accumulator.concat(i), [])
+        .filter(([dateString, available]) => available)
+        .reduce(
+          (accumulator, [dateString]) => {
+            if (!accumulator) {
+              return dateString
+            } else {
+              return accumulator.localeCompare(dateString) < 0
+                ? dateString
+                : accumulator
+            }
+          },
+          null
+        )
+    )
+
     return (
       <Fragment>
         <form onSubmit={e => e.preventDefault()}>
           <label>Max nightly cost ($):{'\u00A0'}
             <input
               type="number"
-              min={Math.min(...data.map(i => i.rate).filter(i => i !== null))}
-              max={Math.max(...data.map(i => i.rate))}
+              min={maxRateMin}
+              max={maxRateMax}
               step={1}
               value={this.state.filters.maxRate}
-              onChange={e => this.setState({filters: {...this.state.filters, maxRate: e.target.value}})}
+              onChange={this.onChangemaxRate}
             ></input>
           </label>
 
@@ -80,17 +147,17 @@ class App extends Component {
             <input
               type="number"
               min={1}
-              max={Math.max(...data.filter(i => i.metadata.facility_rules.maxConsecutiveStay).map(i => i.metadata.facility_rules.maxConsecutiveStay.value))}
+              max={consecutiveDaysMax}
               step={1}
               value={this.state.filters.consecutiveDays}
-              onChange={e => this.setState({filters: { ...this.state.filters, consecutiveDays: e.target.value}})}
+              onChange={this.onChangeConsecutiveDays}
              ></input>
           </label>
 
           <label>After date:{'\u00A0'}
             <DatePicker
               selected={this.state.filters.afterDate}
-              onChange={afterDate => this.setState({filters: {...this.state.filters, afterDate}})}
+              onChange={this.onChangeAfterDate}
               minDate={new Date()}
               maxDate={this.state.filters.beforeDate}
               dateFormat='MMMM d yyyy'
@@ -100,29 +167,9 @@ class App extends Component {
           <label>Before date:{'\u00A0'}
             <DatePicker
               selected={this.state.filters.beforeDate}
-              onChange={beforeDate => this.setState({ filters: { ...this.state.filters, beforeDate } })}
-              minDate={this.state.filters.afterDate || new Date()}
-              maxDate={
-                parseAvailabilityDate(
-                  data
-                    .filter(i => i.availability !== null)
-                    .map(i => Object.entries(i.availability))
-                    .reduce((accumulator, i) => accumulator.concat(i), [])
-                    .filter(([dateString, available]) => available)
-                    .reduce(
-                      (accumulator, [dateString]) => {
-                        if (!accumulator) {
-                          return dateString
-                        } else {
-                          return accumulator.localeCompare(dateString) < 0
-                            ? dateString
-                            : accumulator
-                        }
-                      },
-                      null
-                    )
-                )
-              }
+              onChange={this.onChangeBeforeDate}
+              minDate={beforeDateMin}
+              maxDate={beforeDateMax}
               dateFormat='MMMM d yyyy'
             />
           </label>
