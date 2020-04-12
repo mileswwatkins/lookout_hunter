@@ -1,4 +1,4 @@
-import {parse, format, isValid} from 'date-fns'
+import {add, parse, format, isValid} from 'date-fns'
 import React, { Component, Fragment } from 'react';
 import ReactMapGL, { Marker, Popup } from 'react-map-gl';
 import DatePicker from "react-datepicker";
@@ -50,19 +50,13 @@ class App extends Component {
   }
 
   initialFiltersState = {
-    maxRate: '',
     consecutiveDays: '',
-    afterDate: null,
-    beforeDate: null
-  }
-
-  onChangemaxRate = e => {
-    this.setState({
-      filters: {
-        ...this.state.filters,
-        maxRate: e.target.value
-      }
-    })
+    afterDate: new Date(),
+    // Availability windows are typically only 6 months into
+    // the future
+    beforeDate: add(new Date(), { months: 6 }),
+    carAccess: false,
+    cellCarrier: ''
   }
 
   onChangeConsecutiveDays = e => {
@@ -92,16 +86,32 @@ class App extends Component {
     })
   }
 
+  onChangeCellCarrier = e => {
+    this.setState({
+      filters: {
+        ...this.state.filters,
+        cellCarrier: e.target.value
+      }
+    })
+  }
+
+  onChangeCarAccess = e => {
+    this.setState({
+      filters: {
+        ...this.state.filters,
+        carAccess: e.target.checked
+      }
+    })
+  }
+
   onReset = e => {
     e.preventDefault()
-    this.setState({filters: {...this.initialFiltersState}})
+    this.setState({filters: {
+      ...this.initialFiltersState
+    }})
   }
 
   render () {
-    const maxRateMin = Math.min(...data.map(i => i.rate)
-      .filter(i => i !== null))
-    const maxRateMax = Math.max(...data.map(i => i.rate))
-
     const consecutiveDaysMax = Math.max(
       ...data
         .filter(i => i.metadata.facility_rules.maxConsecutiveStay)
@@ -109,58 +119,33 @@ class App extends Component {
     )
 
     const beforeDateMin = this.state.filters.afterDate || new Date()
-    const beforeDateMax = parseAvailabilityDate(
-      data
-        .filter(i => i.availability !== null)
-        .map(i => Object.entries(i.availability))
-        .reduce((accumulator, i) => accumulator.concat(i), [])
-        .filter(([dateString, available]) => available)
-        .reduce(
-          (accumulator, [dateString]) => {
-            if (!accumulator) {
-              return dateString
-            } else {
-              return accumulator.localeCompare(dateString) < 0
-                ? dateString
-                : accumulator
+    const beforeDateMax = add(new Date(), {months: 6})
+
+    const allCellCarriers = data.reduce(
+      (acc, i) => {
+        if (i.cell_coverage !== null) {
+          i.cell_coverage.forEach(j => {
+            const carrier = j.carrier
+            if (!acc.includes(carrier)) {
+              acc = acc.concat(carrier)
             }
-          },
-          null
-        )
-    )
+          })
+        }
+        return acc
+      },
+      []
+    ).sort()
 
     return (
       <Fragment>
         <form onSubmit={e => e.preventDefault()}>
-          <label>Max nightly cost ($):{'\u00A0'}
-            <input
-              type="number"
-              min={maxRateMin}
-              max={maxRateMax}
-              step={1}
-              value={this.state.filters.maxRate}
-              onChange={this.onChangemaxRate}
-            ></input>
-          </label>
-
-          <label>Consecutive available days:{'\u00A0'}
-            <input
-              type="number"
-              min={1}
-              max={consecutiveDaysMax}
-              step={1}
-              value={this.state.filters.consecutiveDays}
-              onChange={this.onChangeConsecutiveDays}
-             ></input>
-          </label>
-
           <label>After date:{'\u00A0'}
             <DatePicker
               selected={this.state.filters.afterDate}
               onChange={this.onChangeAfterDate}
               minDate={new Date()}
               maxDate={this.state.filters.beforeDate}
-              dateFormat='MMMM d yyyy'
+              dateFormat='MMMM d'
             />
           </label>
 
@@ -170,13 +155,48 @@ class App extends Component {
               onChange={this.onChangeBeforeDate}
               minDate={beforeDateMin}
               maxDate={beforeDateMax}
-              dateFormat='MMMM d yyyy'
+              dateFormat='MMMM d'
             />
+          </label>
+
+          <label>Has <i>X</i> consecutive days available:{'\u00A0'}
+            <input
+              type="number"
+              min={1}
+              max={consecutiveDaysMax}
+              step={1}
+              value={this.state.filters.consecutiveDays}
+              onChange={this.onChangeConsecutiveDays}
+            ></input>
+          </label>
+
+          <label>Has cell reception from carrier:{'\u00A0'}
+            <select
+              value={this.state.filters.cellCarrier}
+              onChange={this.onChangeCellCarrier}
+            >
+              <option value=""></option>
+              {
+                allCellCarriers.map(i =>
+                  <option value={i}>{i}</option>
+                )
+              }
+            </select>
+          </label>
+
+          <label>Accessible by car:{'\u00A0'}
+            <input
+              type="checkbox"
+              name="accessibleByCar"
+              checked={this.state.filters.carAccess}
+              onChange={this.onChangeCarAccess}
+            >
+            </input>
           </label>
 
           <input
             type="reset"
-            value="Remove filters"
+            value="Reset filters"
             onClick={this.onReset}
           ></input>
         </form>
@@ -206,13 +226,6 @@ class App extends Component {
                       i.availability !== null &&
                       Object.values(i.availability).some(v => v) &&
                       (
-                        !this.state.filters.maxRate || (
-                          !isNaN(this.state.filters.maxRate) &&
-                          !isNaN(i.rate) &&
-                          i.rate <= this.state.filters.maxRate
-                        )
-                      ) &&
-                      (
                         !this.state.filters.consecutiveDays || (
                           !isNaN(this.state.filters.consecutiveDays) &&
                           i.availability !== null &&
@@ -238,6 +251,28 @@ class App extends Component {
                           Object.entries(i.availability)
                             .filter(([date, availability]) => availability)
                             .some(([date]) => parseAvailabilityDate(date) <= this.state.filters.beforeDate)
+                        )
+                      ) &&
+                      (
+                        !this.state.filters.cellCarrier || (
+                          i.cell_coverage !== null &&
+                          i.cell_coverage.find(j => j.carrier === this.state.filters.cellCarrier) &&
+                          i.cell_coverage.find(j => j.carrier === this.state.filters.cellCarrier).average_rating >= 3
+                        )
+                      ) &&
+                      (
+                        !this.state.filters.carAccess || (
+                          i.attributes !== null &&
+                          i.attributes.details !== null && (
+                            i.attributes.details["Site Access"] === 'Drive-In' ||
+                            i.attributes.details["Max Num of Vehicles"] > 0 ||
+                            i.attributes.details["Min Num of Vehicles"] > 0 ||
+                            i.attributes.details["Driveway Grade"] ||
+                            i.attributes.details["Driveway Surface"] ||
+                            i.attributes.details["Driveway Entry"] ||
+                            i.attributes.details["Max Vehicle Length"] > 0 ||
+                            i.attributes.details["Hike In Distance to Site"] === 0
+                          )
                         )
                       )
                         ? 'Map-circle__active '
@@ -287,7 +322,7 @@ class App extends Component {
                 <div className='Map-Popup-body'>
                   {
                     (this.state.popup.info.availability === null || Object.keys(this.state.popup.info.availability).length === 0)
-                      ? <span className='Map-Popup-body__unavailable'>Facility is closed</span>
+                      ? <span className='Map-Popup-body__unavailable'>Facility appears to be closed</span>
                       : Object.values(this.state.popup.info.availability).every(v => !v)
                         ? <span className='Map-Popup-body__unavailable'>No availability found</span>
                         : <Fragment>
