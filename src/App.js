@@ -2,7 +2,6 @@ import {add, parse, format, isValid} from 'date-fns'
 import React, { Component, Fragment } from 'react';
 import ReactMapGL, { Marker, Popup } from 'react-map-gl';
 import DatePicker from "react-datepicker";
-import data from './availability.json';
 import "react-datepicker/dist/react-datepicker.css";
 import './App.css';
 
@@ -27,6 +26,7 @@ const formatFacilityName = name => {
 class App extends Component {
   constructor (props) {
     super(props)
+
     this.state = {
       viewport: {
         width: "100vw",
@@ -38,6 +38,12 @@ class App extends Component {
       popup: {...this.initialPopupState},
       filters: {...this.initialFiltersState}
     }
+  }
+
+  componentDidMount = async () => {
+    const response = await fetch('https://lookouthunter.s3.amazonaws.com/availability.json')
+    this.data = response.json()
+    console.log(this.data)
   }
 
   initialPopupState = {
@@ -112,8 +118,12 @@ class App extends Component {
   }
 
   render () {
+    if (!this.data) {
+      return ''
+    }
+
     const consecutiveDaysMax = Math.max(
-      ...data
+      ...this.data
         .filter(i => i.metadata.facility_rules.maxConsecutiveStay)
         .map(i => i.metadata.facility_rules.maxConsecutiveStay.value)
     )
@@ -121,7 +131,7 @@ class App extends Component {
     const beforeDateMin = this.state.filters.afterDate || new Date()
     const beforeDateMax = add(new Date(), {months: 6})
 
-    const allCellCarriers = data.reduce(
+    const allCellCarriers = this.data.reduce(
       (acc, i) => {
         if (i.cell_coverage !== null) {
           i.cell_coverage.forEach(j => {
@@ -208,7 +218,7 @@ class App extends Component {
           mapboxApiAccessToken='pk.eyJ1IjoibWlsZXN3d2F0a2lucyIsImEiOiJjazgzeHRzZ2kxaDF3M2VwYXVpam1jdnphIn0.l2i1tiNOOQy2QsOPKrKNNg'
         >
           {
-            data.map(i =>
+            this.data.map(i =>
               <Marker
                 key={i.metadata.facility_name}
                 latitude={i.metadata.facility_latitude}
@@ -257,6 +267,7 @@ class App extends Component {
                         !this.state.filters.cellCarrier || (
                           i.cell_coverage !== null &&
                           i.cell_coverage.find(j => j.carrier === this.state.filters.cellCarrier) &&
+                          // 3 out of 4 is a rating of "good"
                           i.cell_coverage.find(j => j.carrier === this.state.filters.cellCarrier).average_rating >= 3
                         )
                       ) &&
