@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "lookout_hunter"
+version = "0.1.0"
+description = ""
+authors = ["Miles Watkins <miles.w.watkins@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+lxml = "^4.8.0"
+python-dateutil = "^2.8.2"
+requests = "^2.27.1"
+ratelimit = "^2.2.1"
+backoff = "^1.11.1"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

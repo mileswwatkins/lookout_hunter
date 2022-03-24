@@ -1,4 +1,5 @@
-SECONDS_BETWEEN_REQUESTS = 0.5
+SECONDS_BETWEEN_REQUESTS = 1
+MAX_REQUESTS_PER_SECOND = 1 / SECONDS_BETWEEN_REQUESTS
 REQUEST_TIMEOUT_SECONDS = 2
 # recreation.gov responds with `403` errors unless the user agent string
 # is spoofed to look like a GUI web browser
