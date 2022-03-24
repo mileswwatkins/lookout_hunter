@@ -1,43 +1,39 @@
-import {add, parse, format, isValid} from 'date-fns'
-import React, { Component, Fragment } from 'react';
-import ReactMapGL, { Marker, Popup } from 'react-map-gl';
+import { add, parse, format, isValid } from "date-fns";
+import React, { Component, Fragment } from "react";
+import ReactMapGL, { Marker, Popup } from "react-map-gl";
 import DatePicker from "react-datepicker";
-import data from './availability.json';
+import data from "./availability.json";
 import "react-datepicker/dist/react-datepicker.css";
-import './App.css';
+import "./App.css";
 
-const parseAvailabilityDate = dateString => parse(dateString, 'yyyy-MM-dd', new Date())
+const parseAvailabilityDate = (dateString) =>
+  parse(dateString, "yyyy-MM-dd", new Date());
 
-const reformatDate = dateString => {
-  const date = parseAvailabilityDate(dateString)
-  return format(date, 'MMMM d (E)')
-}
+const reformatDate = (dateString) => {
+  const date = parseAvailabilityDate(dateString);
+  return format(date, "MMMM d (E)");
+};
 
-const formatFacilityName = name => {
-  return name
-    // A few sites have ` RENTAL` at the end of their names,
-    // which is redundant
-    .replace(/ RENTAL$/, '')
-    .replace('MTN.', 'MOUNTAIN')
-    .replace('MT.', 'MOUNT')
-    // There are a few remaining periods that don't make sense
-    .replace('. ', ' ')
-}
+const formatFacilityName = (name) => {
+  return (
+    name
+      // A few sites have ` RENTAL` at the end of their names,
+      // which is redundant
+      .replace(/ RENTAL$/, "")
+      .replace("MTN.", "MOUNTAIN")
+      .replace("MT.", "MOUNT")
+      // There are a few remaining periods that don't make sense
+      .replace(". ", " ")
+  );
+};
 
 class App extends Component {
-  constructor (props) {
-    super(props)
+  constructor(props) {
+    super(props);
     this.state = {
-      viewport: {
-        width: "100vw",
-        height: "90vh",
-        latitude: 45,
-        longitude: -118,
-        zoom: 4.5
-      },
-      popup: {...this.initialPopupState},
-      filters: {...this.initialFiltersState}
-    }
+      popup: { ...this.initialPopupState },
+      filters: { ...this.initialFiltersState },
+    };
   }
 
   initialPopupState = {
@@ -45,121 +41,125 @@ class App extends Component {
     info: null,
     location: {
       latitude: null,
-      longitude: null
-    }
-  }
+      longitude: null,
+    },
+  };
 
   initialFiltersState = {
-    consecutiveDays: '',
+    consecutiveDays: 1,
     afterDate: new Date(),
     // Availability windows are typically only 6 months into
     // the future
     beforeDate: add(new Date(), { months: 6 }),
     carAccess: false,
-    cellCarrier: ''
-  }
+    cellCarrier: "",
+  };
 
-  onChangeConsecutiveDays = e => {
+  onChangeConsecutiveDays = (e) => {
     this.setState({
       filters: {
         ...this.state.filters,
-        consecutiveDays: e.target.value
-      }
-    })
-  }
+        consecutiveDays: e.target.value,
+      },
+    });
+  };
 
-  onChangeAfterDate = afterDate => {
+  onChangeAfterDate = (afterDate) => {
     this.setState({
       filters: {
         ...this.state.filters,
-        afterDate
-      }
-    })
-  }
+        afterDate,
+      },
+    });
+  };
 
-  onChangeBeforeDate = beforeDate => {
+  onChangeBeforeDate = (beforeDate) => {
     this.setState({
       filters: {
         ...this.state.filters,
-        beforeDate
-      }
-    })
-  }
+        beforeDate,
+      },
+    });
+  };
 
-  onChangeCellCarrier = e => {
+  onChangeCellCarrier = (e) => {
     this.setState({
       filters: {
         ...this.state.filters,
-        cellCarrier: e.target.value
-      }
-    })
-  }
+        cellCarrier: e.target.value,
+      },
+    });
+  };
 
-  onChangeCarAccess = e => {
+  onChangeCarAccess = (e) => {
     this.setState({
       filters: {
         ...this.state.filters,
-        carAccess: e.target.checked
-      }
-    })
-  }
+        carAccess: e.target.checked,
+      },
+    });
+  };
 
-  onReset = e => {
-    e.preventDefault()
-    this.setState({filters: {
-      ...this.initialFiltersState
-    }})
-  }
+  onReset = (e) => {
+    e.preventDefault();
+    this.setState({
+      filters: {
+        ...this.initialFiltersState,
+      },
+    });
+  };
 
-  render () {
+  render() {
     const consecutiveDaysMax = Math.max(
       ...data
-        .filter(i => i.metadata.facility_rules.maxConsecutiveStay)
-        .map(i => i.metadata.facility_rules.maxConsecutiveStay.value)
-    )
+        .filter((i) => i.metadata.facility_rules.maxConsecutiveStay)
+        .map((i) => i.metadata.facility_rules.maxConsecutiveStay.value)
+    );
 
-    const beforeDateMin = this.state.filters.afterDate || new Date()
-    const beforeDateMax = add(new Date(), {months: 6})
+    const beforeDateMin = this.state.filters.afterDate || new Date();
+    const beforeDateMax = add(new Date(), { months: 6 });
 
-    const allCellCarriers = data.reduce(
-      (acc, i) => {
+    const allCellCarriers = data
+      .reduce((acc, i) => {
         if (i.cell_coverage !== null) {
-          i.cell_coverage.forEach(j => {
-            const carrier = j.carrier
+          i.cell_coverage.forEach((j) => {
+            const carrier = j.carrier;
             if (!acc.includes(carrier)) {
-              acc = acc.concat(carrier)
+              acc = acc.concat(carrier);
             }
-          })
+          });
         }
-        return acc
-      },
-      []
-    ).sort()
+        return acc;
+      }, [])
+      .sort();
 
     return (
       <Fragment>
-        <form onSubmit={e => e.preventDefault()}>
-          <label>After date:{'\u00A0'}
+        <form onSubmit={(e) => e.preventDefault()}>
+          <label>
+            After date:{"\u00A0"}
             <DatePicker
               selected={this.state.filters.afterDate}
               onChange={this.onChangeAfterDate}
               minDate={new Date()}
               maxDate={this.state.filters.beforeDate}
-              dateFormat='MMMM d'
+              dateFormat="MMMM d"
             />
           </label>
 
-          <label>Before date:{'\u00A0'}
+          <label>
+            Before date:{"\u00A0"}
             <DatePicker
               selected={this.state.filters.beforeDate}
               onChange={this.onChangeBeforeDate}
               minDate={beforeDateMin}
               maxDate={beforeDateMax}
-              dateFormat='MMMM d'
+              dateFormat="MMMM d"
             />
           </label>
 
-          <label>Has <i>X</i> consecutive days available:{'\u00A0'}
+          <label>
+            Has <i>X</i> consecutive days available:{"\u00A0"}
             <input
               type="number"
               min={1}
@@ -170,29 +170,30 @@ class App extends Component {
             ></input>
           </label>
 
-          <label>Has cell reception from carrier:{'\u00A0'}
+          <label>
+            Has cell reception from carrier:{"\u00A0"}
             <select
               value={this.state.filters.cellCarrier}
               onChange={this.onChangeCellCarrier}
             >
               <option value=""></option>
-              {
-                allCellCarriers.map(i =>
-                  <option value={i}>{i}</option>
-                )
-              }
+              {allCellCarriers.map((i) => (
+                <option value={i} key={i}>
+                  {i}
+                </option>
+              ))}
             </select>
           </label>
 
-          <label>Accessible by car:{'\u00A0'}
+          {/* <label>
+            Accessible by car:{"\u00A0"}
             <input
               type="checkbox"
               name="accessibleByCar"
               checked={this.state.filters.carAccess}
               onChange={this.onChangeCarAccess}
-            >
-            </input>
-          </label>
+            ></input>
+          </label> */}
 
           <input
             type="reset"
@@ -202,10 +203,17 @@ class App extends Component {
         </form>
 
         <ReactMapGL
-          {...this.state.viewport}
-          onViewportChange={(viewport) => this.setState({ viewport })}
-          mapStyle='mapbox://styles/mapbox/outdoors-v11'
-          mapboxApiAccessToken='pk.eyJ1IjoibWlsZXN3d2F0a2lucyIsImEiOiJjazgzeHRzZ2kxaDF3M2VwYXVpam1jdnphIn0.l2i1tiNOOQy2QsOPKrKNNg'
+          initialViewState={{
+            latitude: 45,
+            longitude: -118,
+            zoom: 4.5,
+          }}
+          style={{
+            width: "100vw",
+            height: "85vh",
+          }}
+          mapStyle="mapbox://styles/mapbox/outdoors-v11"
+          mapboxAccessToken="pk.eyJ1IjoibWlsZXN3d2F0a2lucyIsImEiOiJjazgzeHRzZ2kxaDF3M2VwYXVpam1jdnphIn0.l2i1tiNOOQy2QsOPKrKNNg"
         >
           {
             data.map(i =>
@@ -343,7 +351,7 @@ class App extends Component {
         </ReactMapGL>
       </Fragment>
     );
-  } 
+  }
 }
 
 export default App;

@@ -266,7 +266,7 @@ All currently-known Recreation.gov `facility_id`s for this project are stored wi
 
 ### Requirements and setup
 
-- Node 12 and `yarn`
+- Node 14 and Yarn
 - `yarn`
 
 ### Running
