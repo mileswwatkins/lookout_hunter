@@ -6,11 +6,11 @@ authors = ["Miles Watkins <miles.w.watkins@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
-lxml = "^4.8.0"
 python-dateutil = "^2.8.2"
 requests = "^2.27.1"
 ratelimit = "^2.2.1"
 backoff = "^1.11.1"
+lxml = "^4.9.2"
 
 [tool.poetry.dev-dependencies]
 
