@@ -22,8 +22,10 @@ jobs:
           cache: 'poetry'
       - name: Install Python dependencies
         run: poetry install
-      - name: Run scraper
-        run: poetry run data/get_availability.py
+      # - name: Run scraper
+      #   run: poetry run data/get_availability.py
+      - name: Mock run scraper, to debug GitHub Actions error
+        run: echo "[]" > data/availability.json
       # GitHub Actions runners have the AWS CLI pre-installed
       - name: Upload output to S3
         run: aws s3 cp data/availability.json s3://${{ secrets.AWS_BUCKET }}/availability.json
