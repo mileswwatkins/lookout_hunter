@@ -22,10 +22,8 @@ jobs:
           cache: 'poetry'
       - name: Install Python dependencies
         run: poetry install
-      # - name: Run scraper
-      #   run: poetry run data/get_availability.py
-      - name: Mock run scraper, to debug GitHub Actions error
-        run: echo "[]" > data/availability.json
+      - name: Run scraper
+        run: poetry run data/get_availability.py
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
