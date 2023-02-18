@@ -1,30 +1,11 @@
-import { add, parse, format, isValid } from "date-fns";
+import { add } from "date-fns";
 import React, { Component, Fragment } from "react";
 import ReactMapGL, { Marker, Popup } from "react-map-gl";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { checkFilters } from "./filters";
+import { formatFacilityName, reformatDate, isLikelyClosed } from "./utils";
 import "./App.css";
-
-const parseAvailabilityDate = (dateString) =>
-  parse(dateString, "yyyy-MM-dd", new Date());
-
-const reformatDate = (dateString) => {
-  const date = parseAvailabilityDate(dateString);
-  return format(date, "MMMM d (E)");
-};
-
-const formatFacilityName = (name) => {
-  return (
-    name
-      // A few sites have ` RENTAL` at the end of their names,
-      // which is redundant
-      .replace(/ RENTAL$/, "")
-      .replace("MTN.", "MOUNTAIN")
-      .replace("MT.", "MOUNT")
-      // There are a few remaining periods that don't make sense
-      .replace(". ", " ")
-  );
-};
 
 const Filters = ({
   afterDate,
@@ -40,7 +21,7 @@ const Filters = ({
   onReset,
 }) => {
   const beforeDateMin = afterDate || new Date();
-  const beforeDateMax = add(new Date(), { months: 6 });
+  const beforeDateMax = add(new Date(), { months: 6, days: 1 });
 
   return (
     <section className="Filters">
@@ -112,61 +93,60 @@ const Filters = ({
   );
 };
 
-const MapPopup = ({ location, info, onClose }) => (
-  <Popup
-    {...location}
-    closeOnClick={false}
-    closeButton={true}
-    onClose={onClose}
-    tipSize={0}
-    offsetTop={-10}
-    anchor="bottom"
-    dynamicPosition={false}
-    captureScroll={true}
-  >
-    <div className="Map-Popup">
-      <span className="Map-Popup-header">
-        <a
-          href={`https://www.recreation.gov/camping/campgrounds/${info.metadata.facility_id}`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {formatFacilityName(info.metadata.facility_name)}
-        </a>
-      </span>
-      <div className="Map-Popup-body">
-        {info.availability === null ||
-        Object.keys(info.availability).length === 0 ? (
-          <span className="Map-Popup-body__unavailable">
-            Facility appears to be closed
-          </span>
-        ) : Object.values(info.availability).every((v) => !v) ? (
-          <span className="Map-Popup-body__unavailable">
-            No availability found
-          </span>
-        ) : (
-          <Fragment>
-            <span>
-              Available for{" "}
-              {
-                info.availability.filter(([date, isAvailable]) => isAvailable)
-                  .length
-              }{" "}
-              total days:
+const MapPopup = ({ location, info, onClose }) => {
+  let availableDates = [];
+  if (info.availability) {
+    availableDates = Object.entries(info.availability)
+      .filter(([date, isAvailable]) => isAvailable)
+      .map(([date, isAvailable]) => date);
+  }
+
+  return (
+    <Popup
+      {...location}
+      closeOnClick={false}
+      closeButton={true}
+      onClose={onClose}
+      tipSize={0}
+      offsetTop={-10}
+      anchor="bottom"
+      dynamicPosition={false}
+      captureScroll={true}
+    >
+      <div className="Map-Popup">
+        <span className="Map-Popup-header">
+          <a
+            href={`https://www.recreation.gov/camping/campgrounds/${info.metadata.facility_id}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {formatFacilityName(info.metadata.facility_name)}
+          </a>
+        </span>
+        <div className="Map-Popup-body">
+          {isLikelyClosed(info.availability) ? (
+            <span className="Map-Popup-body__unavailable">
+              Facility appears to be closed
             </span>
-            <ul className="Map-Popup-list">
-              {Object.entries(info.availability)
-                .filter(([date, isAvailable]) => isAvailable)
-                .map(([date, isAvailable]) => (
+          ) : availableDates.length === 0 ? (
+            <span className="Map-Popup-body__unavailable">
+              No availability found
+            </span>
+          ) : (
+            <Fragment>
+              <span>Available for {availableDates.length} total days:</span>
+              <ul className="Map-Popup-list">
+                {availableDates.map((date) => (
                   <li key={date}>{reformatDate(date)}</li>
                 ))}
-            </ul>
-          </Fragment>
-        )}
+              </ul>
+            </Fragment>
+          )}
+        </div>
       </div>
-    </div>
-  </Popup>
-);
+    </Popup>
+  );
+};
 
 class Map extends Component {
   constructor(props) {
@@ -196,9 +176,10 @@ class Map extends Component {
         }}
         style={{
           width: "100vw",
+          // TODO: Set a better hack-y value, or calculate this correctly
           height: "85vh",
         }}
-        mapStyle="mapbox://styles/mapbox/outdoors-v11"
+        mapStyle="mapbox://styles/mapbox/outdoors-v12"
         mapboxAccessToken="pk.eyJ1IjoibWlsZXN3d2F0a2lucyIsImEiOiJjazgzeHRzZ2kxaDF3M2VwYXVpam1jdnphIn0.l2i1tiNOOQy2QsOPKrKNNg"
       >
         {this.props.data.map((i) => (
@@ -216,66 +197,7 @@ class Map extends Component {
                   this.state.popup.location.longitude
                   ? "Map-circle__selected "
                   : "") +
-                (i.availability !== null &&
-                Object.values(i.availability).some((v) => v) &&
-                (!this.props.filters.consecutiveDays ||
-                  (!isNaN(this.props.filters.consecutiveDays) &&
-                    i.availability !== null &&
-                    Object.values(i.availability).reduce(
-                      (accumulator, _, index, array) => {
-                        return (
-                          accumulator ||
-                          (index - (this.props.filters.consecutiveDays - 1) >=
-                            0 &&
-                            array
-                              .slice(
-                                index -
-                                  (this.props.filters.consecutiveDays - 1),
-                                index + 1
-                              )
-                              .every((v) => v))
-                        );
-                      },
-                      false
-                    ))) &&
-                (!this.props.filters.afterDate ||
-                  (isValid(this.props.filters.afterDate) &&
-                    Object.entries(i.availability)
-                      .filter(([date, availability]) => availability)
-                      .some(
-                        ([date]) =>
-                          parseAvailabilityDate(date) >=
-                          this.props.filters.afterDate
-                      ))) &&
-                (!this.props.filters.beforeDate ||
-                  (isValid(this.props.filters.beforeDate) &&
-                    Object.entries(i.availability)
-                      .filter(([date, availability]) => availability)
-                      .some(
-                        ([date]) =>
-                          parseAvailabilityDate(date) <=
-                          this.props.filters.beforeDate
-                      ))) &&
-                (!this.props.filters.cellCarrier ||
-                  (i.cell_coverage !== null &&
-                    i.cell_coverage.find(
-                      (j) => j.carrier === this.props.filters.cellCarrier
-                    ) &&
-                    // 3 out of 4 is a rating of "good"
-                    i.cell_coverage.find(
-                      (j) => j.carrier === this.props.filters.cellCarrier
-                    ).average_rating >= 3)) &&
-                (!this.props.filters.carAccess ||
-                  (i.attributes !== null &&
-                    i.attributes.details !== null &&
-                    (i.attributes.details["Site Access"] === "Drive-In" ||
-                      i.attributes.details["Max Num of Vehicles"] > 0 ||
-                      i.attributes.details["Min Num of Vehicles"] > 0 ||
-                      i.attributes.details["Driveway Grade"] ||
-                      i.attributes.details["Driveway Surface"] ||
-                      i.attributes.details["Driveway Entry"] ||
-                      i.attributes.details["Max Vehicle Length"] > 0 ||
-                      i.attributes.details["Hike In Distance to Site"] === 0)))
+                (checkFilters(i, this.props.filters)
                   ? "Map-circle__active "
                   : "Map-circle__inactive ")
               }
@@ -330,7 +252,7 @@ class App extends Component {
     afterDate: new Date(),
     // Availability windows are typically only 6 months into
     // the future
-    beforeDate: add(new Date(), { months: 6 }),
+    beforeDate: add(new Date(), { months: 6, days: 1 }),
     carAccess: false,
     cellCarrier: "",
   };
@@ -347,7 +269,7 @@ class App extends Component {
     this.setState({
       filters: {
         ...this.state.filters,
-        consecutiveDays: e.target.value,
+        consecutiveDays: Number(e.target.value),
       },
     });
   };
@@ -427,7 +349,7 @@ class App extends Component {
           <h1 className="Header-Text">Lookout Hunter</h1>
         </header>
 
-        <content>
+        <section className="content">
           <Filters
             {...this.state.filters}
             consecutiveDaysMax={consecutiveDaysMax}
@@ -440,7 +362,7 @@ class App extends Component {
           />
 
           <Map data={this.state.data} filters={this.state.filters} />
-        </content>
+        </section>
       </Fragment>
     );
   }

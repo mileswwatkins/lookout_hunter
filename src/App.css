@@ -9,7 +9,7 @@ header {
   margin: 0;
 }
 
-content {
+section.content {
   display: flex;
 }
 
