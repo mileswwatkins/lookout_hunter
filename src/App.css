@@ -1,5 +1,52 @@
-.App {
-  text-align: center;
+header {
+  padding-top: 1.5rem;
+  padding-left: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid black;
+}
+
+.Header-Text {
+  margin: 0;
+}
+
+section.content {
+  display: flex;
+}
+
+.Filters {
+  flex-basis: 30%;
+  padding-left: 1.5rem;
+  padding-right: 1rem;
+  border-right: 1px solid black;
+}
+
+.Filters-Header {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.Filters-Header-Label {
+  margin: 0;
+}
+
+form > label {
+  font-size: 1rem;
+  font-weight: 700;
+  display: block;
+}
+
+.Filter-Label-Text {
+  width: 80px;
+}
+
+.react-datepicker-wrapper {
+  display: inline;
+}
+
+.react-datepicker__input-container {
+  display: inline;
 }
 
 .Map-Popup {
