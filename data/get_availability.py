@@ -127,6 +127,8 @@ def get_facility_availability(facility_id):
     NOT_AVAIALABLE_CODES = [
         'Reserved',
         'Not Reservable',
+        # "Not Yet Reservable"
+        'NYR',
         'Not Available',
         'Not Available Cutoff',
         # Ironic, right? This code appears to be used to describe

@@ -1,0 +1,38 @@
+on:
+  # Run only once per day – it takes a long time to execute due to rate
+  # limiting, and GitHub Actions only affords ~60 minutes per day in free
+  # processing time!
+  schedule:
+    - cron: '0 0 * * *'
+  # Although if we really need to, we can manually trigger a run
+  workflow_dispatch:
+
+jobs:
+  get-availability:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install required HTML parsing libraries
+        run: sudo apt-get install -y libxml2-dev libxslt-dev python3-dev
+      - uses: actions/checkout@v3
+      - name: Install Poetry
+        run: pipx install poetry
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+          cache: 'poetry'
+      - name: Install Python dependencies
+        run: poetry install
+      - name: Run scraper
+        run: poetry run data/get_availability.py
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      # GitHub Actions runners have the AWS CLI pre-installed
+      - name: Upload output to S3
+        run: aws s3 cp data/availability.json s3://${{ secrets.AWS_BUCKET }}/availability.json --acl public-read
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
