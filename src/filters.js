@@ -59,31 +59,18 @@ const checkCarAccessFilter = (item, carAccess) => {
     return true;
   }
 
-  const details = item.attributes?.details;
-  if (!details || typeof details !== "object") {
-    return false;
-  }
-
-  // Any of these properties should _roughly_ indicate car access
-  return (
-    details["Site Access"] === "Drive-In" ||
-    details["Max Num of Vehicles"] > 0 ||
-    details["Min Num of Vehicles"] > 0 ||
-    details["Driveway Grade"] ||
-    details["Driveway Surface"] ||
-    details["Driveway Entry"] ||
-    details["Max Vehicle Length"] > 0 ||
-    details["Hike In Distance to Site"] === 0
-  );
+  const siteAccess = item.attributes?.details?.["Site Access"];
+  return ["Drive-In", "Drive In"].includes(siteAccess);
 };
 
-// TODO: Car access filter is currently not utilized
 const checkFilters = (item, filters) =>
   checkDateFilters(
     item,
     filters.consecutiveDays,
     filters.afterDate,
     filters.beforeDate
-  ) && checkCellCarrierFilter(item, filters.cellCarrier);
+  ) &&
+  checkCellCarrierFilter(item, filters.cellCarrier) &&
+  checkCarAccessFilter(item, filters.carAccess);
 
 export { checkFilters };

@@ -18,6 +18,8 @@ const Filters = ({
   allCellCarriers,
   cellCarrier,
   onChangeCellCarrier,
+  carAccess,
+  onChangeCarAccess,
   onReset,
 }) => {
   const beforeDateMin = afterDate || new Date();
@@ -79,15 +81,15 @@ const Filters = ({
           </select>
         </label>
 
-        {/* <label>
-    Accessible by car:{"\u00A0"}
-    <input
-      type="checkbox"
-      name="accessibleByCar"
-      checked={carAccess}
-      onChange={onChangeCarAccess}
-    ></input>
-  </label> */}
+        <label>
+          Accessible by car:{"\u00A0"}
+          <input
+            type="checkbox"
+            name="accessibleByCar"
+            checked={carAccess}
+            onChange={onChangeCarAccess}
+          ></input>
+        </label>
       </form>
     </section>
   );
@@ -244,6 +246,7 @@ class App extends Component {
     this.onChangeBeforeDate = this.onChangeBeforeDate.bind(this);
     this.onChangeConsecutiveDays = this.onChangeConsecutiveDays.bind(this);
     this.onChangeCellCarrier = this.onChangeCellCarrier.bind(this);
+    this.onChangeCarAccess = this.onChangeCarAccess.bind(this);
     this.onReset = this.onReset.bind(this);
   }
 
@@ -358,6 +361,7 @@ class App extends Component {
             onChangeBeforeDate={this.onChangeBeforeDate}
             onChangeConsecutiveDays={this.onChangeConsecutiveDays}
             onChangeCellCarrier={this.onChangeCellCarrier}
+            onChangeCarAccess={this.onChangeCarAccess}
             onReset={this.onReset}
           />
 
