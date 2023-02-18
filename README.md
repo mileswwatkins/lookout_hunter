@@ -278,10 +278,10 @@ Otherwise, maybe once per year `poetry run data/compile_facility_ids.py` should 
 
 ### Running
 
-#### `yarn start`
+Use `yarn start`, which runs the app and makes it available at http://localhost:3000.
 
-Runs the app in the development mode. Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### Deployment
 
-#### `yarn build`
+Run `yarn deploy` to build and deploy to AWS S3. This requires AWS credentials for the S3 bucket in question.
 
-Builds the app for production to the `build` folder.
+More commonly, you'll [use GitHub Actions](https://github.com/mileswwatkins/lookout_hunter/actions/workflows/deploy-frontend.yml) to deploy the front-end.

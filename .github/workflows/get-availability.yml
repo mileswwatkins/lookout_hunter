@@ -3,7 +3,7 @@ on:
   # limiting, and GitHub Actions only affords ~60 minutes per day in free
   # processing time!
   schedule:
-    - cron: '0 0 * * *'
+    - cron: "0 0 * * *"
   # Although if we really need to, we can manually trigger a run
   workflow_dispatch:
 
@@ -19,7 +19,7 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: 3.9
-          cache: 'poetry'
+          cache: "poetry"
       - name: Install Python dependencies
         run: poetry install
       - name: Run scraper
@@ -32,7 +32,8 @@ jobs:
           aws-region: us-east-1
       # GitHub Actions runners have the AWS CLI pre-installed
       - name: Upload output to S3
-        run: aws s3 cp data/availability.json s3://${{ secrets.AWS_BUCKET }}/availability.json --acl public-read
+        # Apply a one-hour cache to the JSON file
+        run: aws s3 cp data/availability.json s3://${{ secrets.AWS_BUCKET }}/availability.json --acl public-read --cache-control "public, max-age=3600, immutable"
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
