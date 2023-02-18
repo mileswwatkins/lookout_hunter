@@ -34,6 +34,3 @@ jobs:
       - name: Upload output to S3
         # Apply a one-hour cache to the JSON file
         run: aws s3 cp data/availability.json s3://${{ secrets.AWS_BUCKET }}/availability.json --acl public-read --cache-control "public, max-age=3600, immutable"
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
