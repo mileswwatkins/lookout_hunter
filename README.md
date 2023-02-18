@@ -1,5 +1,7 @@
 ## Lookout Hunter
 
+[View the website!](https://lookouthunter.s3.amazonaws.com/index.html)
+
 ![Pickett Butte Lookout in Umpqua National Forest, Oregon](lookout.jpg)
 
 [Fire lookout towers](https://en.wikipedia.org/wiki/Fire_lookout_tower) are scattered across public lands in [almost every American state](http://www.nhlr.org/lookouts/), and are especially prevalent on public lands in the Mountain West. Many of these towers have been decommissioned, their function replaced by satellite and areal imagery. And some of these decommissioned towers are now available to rent via Recreation.gov!
@@ -269,6 +271,8 @@ All currently-known Recreation.gov `facility_id`s for this project are stored wi
 Otherwise, maybe once per year `poetry run data/compile_facility_ids.py` should be run to update the text file of IDs.
 
 ## Web front-end
+
+The front-end is hosted as a website [here](https://lookouthunter.s3.amazonaws.com/index.html) on AWS S3, but if you want to develop it follow the directions below.
 
 ### Requirements and setup
 
