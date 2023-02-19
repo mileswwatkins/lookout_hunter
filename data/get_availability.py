@@ -46,6 +46,30 @@ def get_facility_ids():
         return file.read().split('\n')
 
 
+coordinate_overrides = {
+    # Meadow Peak Lookout, Montana
+    '10103111': {
+        'facility_latitude': 48.080,
+        'facility_longitude': -114.989
+    },
+    # Big Hole Lookout, Montana
+    '10110659': {
+        'facility_latitude': 47.604,
+        'facility_longitude': -115.070
+    },
+    # Steliko Lookout, Washington
+    '10132083': {
+        'facility_latitude': 47.741,
+        'facility_longitude': -120.344
+    },
+    # Tyee Lookout, Washington
+    '10132085': {
+        'facility_latitude': 47.864,
+        'facility_longitude': -120.471
+    }
+}
+
+
 def get_facility_metadata(facility_id):
     ''' Fetch metadata for a particular campground '''
     METADATA_URL = 'https://www.recreation.gov/api/camps/campgrounds/{facility_id}'
@@ -118,6 +142,13 @@ def get_facility_metadata(facility_id):
     campground_metadata['links'] = [{'title': i['title'], 'url': i['url']} for i in campground_metadata['links']]
     assert all([i['notice_type'] == 'warning' for i in campground_metadata['notices']])
     campground_metadata['notices'] = [i['notice_text'] for i in campground_metadata['notices']] if campground_metadata['notices'] else []
+
+    # Provide the geographic coordinates for a few shelters that are
+    # missing those values
+    if campground_metadata['facility_latitude'] == 0 and campground_metadata['facility_longitude'] == 0:
+        coordinates = coordinate_overrides.get(campground_metadata['facility_id'])
+        assert coordinates, f"Found new listing that's missing geographic coordinates and requires a manual override. `facility_id` is: {campground_metadata['facility_id']}"
+        campground_metadata.update(coordinates)
 
     return campground_metadata
 
