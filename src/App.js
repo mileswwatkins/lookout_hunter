@@ -1,4 +1,4 @@
-import { add } from "date-fns";
+import { add, sub } from "date-fns";
 import React, { Component, Fragment } from "react";
 import ReactMapGL, { Marker, Popup } from "react-map-gl";
 import DatePicker from "react-datepicker";
@@ -22,8 +22,13 @@ const Filters = ({
   onChangeCarAccess,
   onReset,
 }) => {
-  const beforeDateMin = afterDate || new Date();
+  const beforeDateMin = add(afterDate || new Date(), { days: 1 });
+  // Availability windows are typically only 6 months into
+  // the future
   const beforeDateMax = add(new Date(), { months: 6, days: 1 });
+
+  const afterDateMin = new Date();
+  const afterDateMax = sub(beforeDate || beforeDateMax, { days: 1 });
 
   return (
     <section className="Filters">
@@ -38,8 +43,8 @@ const Filters = ({
           <DatePicker
             selected={afterDate}
             onChange={onChangeAfterDate}
-            minDate={new Date()}
-            maxDate={beforeDate}
+            minDate={afterDateMin}
+            maxDate={afterDateMax}
             dateFormat="MMMM d"
             className="Filter-Label-Text"
           />
@@ -252,10 +257,8 @@ class App extends Component {
 
   initialFiltersState = {
     consecutiveDays: 1,
-    afterDate: new Date(),
-    // Availability windows are typically only 6 months into
-    // the future
-    beforeDate: add(new Date(), { months: 6, days: 1 }),
+    afterDate: null,
+    beforeDate: null,
     carAccess: false,
     cellCarrier: "",
   };
