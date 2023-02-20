@@ -63,7 +63,7 @@ const Filters = ({
         </label>
 
         <label>
-          Has <i>X</i> consecutive days available:{"\u00A0"}
+          For this many consecutive days:{"\u00A0"}
           <input
             type="number"
             min={1}
