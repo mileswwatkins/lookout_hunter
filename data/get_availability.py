@@ -1,6 +1,7 @@
 #! /usr/bin/env python3
 
 import datetime
+from dateutil.relativedelta import relativedelta
 import json
 import logging
 import os
@@ -153,8 +154,9 @@ def get_facility_metadata(facility_id):
     return campground_metadata
 
 
-def get_facility_availability(facility_id):
-    ''' Fetch availability for a particular campground '''
+def get_campsite_availability(campsite_id):
+    ''' Fetch which days a campsite is available for booking '''
+
     NOT_AVAIALABLE_CODES = [
         'Reserved',
         'Not Reservable',
@@ -167,44 +169,28 @@ def get_facility_availability(facility_id):
         'Open'
     ]
 
+    # The booking window is typically only 6 months into the future
+    look_until = datetime.date.today() + relativedelta(months=6, days=1)
+
     availabilities = {}
 
-    AVAILABILITY_URL = 'https://www.recreation.gov/api/camps/availability/campground/{facility_id}/month'
-
-    month_to_check = datetime.date.today().month
-    year_to_check = datetime.date.today().year
-    MONTHS_TO_LOOK_AHEAD = 7
-    for _ in range(MONTHS_TO_LOOK_AHEAD):
-        logger.debug("Querying availability for facility {} for {}/{}".format(facility_id, month_to_check, year_to_check))
-        campsites = get_json_rate_limited(
-            AVAILABILITY_URL.format(facility_id=facility_id),
-            params={"start_date": f'{year_to_check}-{str(month_to_check).zfill(2)}-01T00:00:00.000Z'},
-            headers=config.FAKE_USER_AGENT_HEADER
-        )['campsites']
-
-        # Since these are special-case campgrounds for
-        # recreation.gov, they all have just a single campsite.
-        # Or sometimes there are no sites at all, temporarily.
-        if campsites:
-            campsite_id = list(campsites.keys())[0]
-        else:
-            logger.debug('Found no campsites for facility {}')
-            return {}
-
-        month_availabilities = {
+    availability_url = f'https://www.recreation.gov/api/camps/availability/campsite/{campsite_id}/all'
+    data = get_json_rate_limited(
+        availability_url,
+        headers=config.FAKE_USER_AGENT_HEADER
+    )['availability']['availabilities']
+    if data:
+        availabilities = {
+            # Truncate the time component off of the timestamp, and determine
+            # whether a site is available on a given night
             k.replace('T00:00:00Z', ''): (v not in NOT_AVAIALABLE_CODES)
             for k, v
-            in campsites[campsite_id]['availabilities'].items()
+            in data.items()
+            # Also, since this endpoint responds with months waaaaaay in the
+            # future (where the availability will always be `NYR`), truncate
+            # those superfluous months so the output JSON is more managable
+            if not (k > look_until.isoformat() and v in NOT_AVAIALABLE_CODES)
         }
-        availabilities.update(month_availabilities)
-
-        # Prepare to query the next month
-        if month_to_check == 12:
-            year_to_check += 1
-            month_to_check = 1
-        else:
-            month_to_check += 1
-
     return availabilities or None
 
 
@@ -343,6 +329,49 @@ def parse_attribute_string(string):
     return value
 
 
+def get_campsite_id(facility_id):
+    '''
+    Assuming there's only one campsite in the campground/facility, get
+    its campsite ID
+    '''
+
+    campsites_url = f'https://www.recreation.gov/api/camps/campgrounds/{facility_id}/campsites'
+    campsite_infos = get_json_rate_limited(
+        campsites_url,
+        headers=config.FAKE_USER_AGENT_HEADER
+    )['campsites']
+
+    assert len(campsite_infos) == 1, f"Found an unexpected number of campsites for facility ID {facility_id}"
+    campsite_id = campsite_infos[0]['campsite_id']
+
+    return campsite_id
+
+
+def get_campsite_metadata(campsite_id):
+    '''
+    Fetch a few additional metadata fields that can't be retrieved from
+    the facility metadata response
+    '''
+
+    fields_to_fetch = [
+        'campsite_id',
+        'is_accessible',
+        # This will show whether the site has electricity
+        'campsite_type',
+        # In the future, might be worthwhile to fetch the `campsite_longitude`
+        # and `campsite_latitude` and see if they're more accurate than the
+        # facility's value. Could also be nice to grab a list of all the
+        # provided equipment/offerings.
+    ]
+
+    campsite_url = f'https://www.recreation.gov/api/camps/campsites/{campsite_id}'
+    data = get_json_rate_limited(campsite_url, headers=config.FAKE_USER_AGENT_HEADER)['campsite']
+    return {
+        k: v for k, v in data.items()
+        if k in fields_to_fetch
+    }
+
+
 if __name__ == '__main__':
     output_path = os.path.join(sys.path[0], 'availability.json')
     data = []
@@ -350,16 +379,25 @@ if __name__ == '__main__':
     for facility_id in get_facility_ids():
         metadata = get_facility_metadata(facility_id)
         if metadata is None:
+            logger.info('Found no metadata for facility ID {}; skipping'.format(facility_id))
             continue
         logger.info('Fetching information for {}'.format(metadata['facility_name'].title()))
 
+        campsite_id = get_campsite_id(facility_id)
+
+        # Since they're not yet being used on the front-end, skip scraping
+        # images and rate. We're already being rate-limited by the
+        # Recreation.gov API, so decreasing the number of overall requests is
+        # a good idea.
         record = {
-            'metadata': metadata,
+            'metadata': {**metadata, **get_campsite_metadata(campsite_id)},
             'attributes': get_attributes(facility_id),
-            'images': get_images(facility_id),
+            # 'images': get_images(facility_id),
+            'images': [],
             'cell_coverage': get_cell_coverage(facility_id),
-            'rate': get_facility_rate(facility_id),
-            'availability': get_facility_availability(facility_id)
+            # 'rate': get_facility_rate(facility_id),
+            'rate': None,
+            'availability': get_campsite_availability(campsite_id)
         }
         if record['availability'] is None and \
                 record['cell_coverage'] is None and \
