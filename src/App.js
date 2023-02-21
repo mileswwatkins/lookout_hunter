@@ -34,7 +34,12 @@ const Filters = ({
     <section className="Filters">
       <div className="Filters-Header">
         <h2 className="Filters-Header-Label">Filters</h2>
-        <input type="reset" value="Reset filters" onClick={onReset}></input>
+        <input
+          type="reset"
+          className="Filters-Header-Reset"
+          value="Reset filters"
+          onClick={onReset}
+        ></input>
       </div>
 
       <form onSubmit={(e) => e.preventDefault()}>
@@ -182,9 +187,10 @@ class Map extends Component {
           zoom: 4.5,
         }}
         style={{
-          width: "100vw",
-          // TODO: Set a better hack-y value, or calculate this correctly
-          height: "85vh",
+          width: "100%",
+          // This is still a hack, but represents the full page height minus
+          // the header text and padding and the hairline border between panes
+          height: "calc(100vh - 38px - 2.5rem - 1px)",
         }}
         mapStyle="mapbox://styles/mapbox/outdoors-v12"
         mapboxAccessToken="pk.eyJ1IjoibWlsZXN3d2F0a2lucyIsImEiOiJjazgzeHRzZ2kxaDF3M2VwYXVpam1jdnphIn0.l2i1tiNOOQy2QsOPKrKNNg"

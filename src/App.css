@@ -7,6 +7,7 @@ header {
 
 .Header-Text {
   margin: 0;
+  font-size: 2rem;
 }
 
 section.content {
@@ -31,9 +32,13 @@ section.content {
   margin: 0;
 }
 
+.Filters-Header-Reset {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
 form > label {
   font-size: 1rem;
-  font-weight: 700;
   display: block;
   margin-bottom: 0.25rem;
 }
@@ -59,12 +64,18 @@ form > label {
 .Map-Popup-header {
   font-size: 16px;
   font-weight: bold;
+  line-height: 14px;
 }
 
 .Map-Popup-body {
   font-size: 12px;
   margin-top: 12px;
   margin-bottom: 0;
+}
+
+.Map-Popup-body > ul {
+  margin-left: 0;
+  padding-left: 20px;
 }
 
 .Map-Popup-body__unavailable {
