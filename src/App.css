@@ -10,15 +10,23 @@ header {
   font-size: 2rem;
 }
 
-section.content {
+.Content {
   display: flex;
 }
 
-.Filters {
+.Content-FilterPane {
   flex-basis: 30%;
   padding-left: 1.5rem;
   padding-right: 1rem;
+  padding-bottom: 1.5rem;
   border-right: 1px solid black;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.Content-Attribution {
+  display: block;
 }
 
 .Filters-Header {

@@ -404,20 +404,39 @@ class App extends Component {
           <h1 className="Header-Text">Lookout Hunter</h1>
         </header>
 
-        <section className="content">
-          <Filters
-            {...this.state.filters}
-            consecutiveDaysMax={consecutiveDaysMax}
-            allCellCarriers={allCellCarriers}
-            onChangeAfterDate={this.onChangeAfterDate}
-            onChangeBeforeDate={this.onChangeBeforeDate}
-            onChangeConsecutiveDays={this.onChangeConsecutiveDays}
-            onChangeCellCarrier={this.onChangeCellCarrier}
-            onChangeElectricity={this.onChangeElectricity}
-            onChangeCarAccess={this.onChangeCarAccess}
-            onChangeAccessible={this.onChangeAccessible}
-            onReset={this.onReset}
-          />
+        <section className="Content">
+          <div className="Content-FilterPane">
+            <Filters
+              {...this.state.filters}
+              consecutiveDaysMax={consecutiveDaysMax}
+              allCellCarriers={allCellCarriers}
+              onChangeAfterDate={this.onChangeAfterDate}
+              onChangeBeforeDate={this.onChangeBeforeDate}
+              onChangeConsecutiveDays={this.onChangeConsecutiveDays}
+              onChangeCellCarrier={this.onChangeCellCarrier}
+              onChangeElectricity={this.onChangeElectricity}
+              onChangeCarAccess={this.onChangeCarAccess}
+              onChangeAccessible={this.onChangeAccessible}
+              onReset={this.onReset}
+            />
+
+            <div>
+              <span className="Content-Attribution">
+                With ♥,{" "}
+                <a href="http://mileswwatkins.com" rel="noreferrer">
+                  Miles Watkins
+                </a>
+              </span>
+              <span className="Content-Attribution">
+                <a
+                  href="https://github.com/mileswwatkins/lookout_hunter"
+                  rel="noreferrer"
+                >
+                  Code on GitHub
+                </a>
+              </span>
+            </div>
+          </div>
 
           <Map data={this.state.data} filters={this.state.filters} />
         </section>
