@@ -341,10 +341,11 @@ def get_campsite_id(facility_id):
         headers=config.FAKE_USER_AGENT_HEADER
     )['campsites']
 
-    assert len(campsite_infos) == 1, f"Found an unexpected number of campsites for facility ID {facility_id}"
-    campsite_id = campsite_infos[0]['campsite_id']
-
-    return campsite_id
+    assert len(campsite_infos) < 2, f"Found an unexpected number of campsites for facility ID {facility_id}"
+    if len(campsite_infos) == 0:
+        return None
+    else:
+        return campsite_infos[0]['campsite_id']
 
 
 def get_campsite_metadata(campsite_id):
@@ -384,6 +385,9 @@ if __name__ == '__main__':
         logger.info('Fetching information for {}'.format(metadata['facility_name'].title()))
 
         campsite_id = get_campsite_id(facility_id)
+        if campsite_id is None:
+            logger.info(f'Found no campsites for {metadata["facility_name"]}; skipping')
+            continue
 
         # Since they're not yet being used on the front-end, skip scraping
         # images and rate. We're already being rate-limited by the
