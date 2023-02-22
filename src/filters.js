@@ -54,13 +54,38 @@ const checkCellCarrierFilter = (item, cellCarrier) => {
   return !isNaN(rating) && rating >= 3;
 };
 
+const checkElectricityFilter = (item, electricity) => {
+  if (!electricity) {
+    return true;
+  }
+
+  return (
+    item.metadata["campsite_type"] === "CABIN ELECTRIC" ||
+    item.metadata?.amenities?.includes("Electricity") ||
+    item.metadata?.amenities?.includes("Cabin Electricity")
+  );
+};
+
 const checkCarAccessFilter = (item, carAccess) => {
   if (!carAccess) {
     return true;
   }
 
   const siteAccess = item.attributes?.details?.["Site Access"];
-  return ["Drive-In", "Drive In"].includes(siteAccess);
+  return (
+    ["Drive-In", "Drive In"].includes(siteAccess) ||
+    // Any site that is ADA accessible is certainly accessible by car, even if
+    // not explicitly stated in the data
+    Boolean(item.metadata?.["is_accessible"])
+  );
+};
+
+const checkAccessibleFilter = (item, accessible) => {
+  if (!accessible) {
+    return true;
+  }
+
+  return Boolean(item.metadata?.["is_accessible"]);
 };
 
 const checkFilters = (item, filters) =>
@@ -71,6 +96,8 @@ const checkFilters = (item, filters) =>
     filters.beforeDate
   ) &&
   checkCellCarrierFilter(item, filters.cellCarrier) &&
-  checkCarAccessFilter(item, filters.carAccess);
+  checkElectricityFilter(item, filters.electricity) &&
+  checkCarAccessFilter(item, filters.carAccess) &&
+  checkAccessibleFilter(item, filters.accessible);
 
 export { checkFilters };

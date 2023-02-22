@@ -20,6 +20,10 @@ const Filters = ({
   onChangeCellCarrier,
   carAccess,
   onChangeCarAccess,
+  electricity,
+  onChangeElectricity,
+  accessible,
+  onChangeAccessible,
   onReset,
 }) => {
   const beforeDateMin = add(afterDate || new Date(), { days: 1 });
@@ -92,12 +96,29 @@ const Filters = ({
         </label>
 
         <label>
+          Has electricity:{"\u00A0"}
+          <input
+            type="checkbox"
+            checked={electricity}
+            onChange={onChangeElectricity}
+          ></input>
+        </label>
+
+        <label>
           Accessible by car:{"\u00A0"}
           <input
             type="checkbox"
-            name="accessibleByCar"
             checked={carAccess}
             onChange={onChangeCarAccess}
+          ></input>
+        </label>
+
+        <label>
+          ADA accessible:{"\u00A0"}
+          <input
+            type="checkbox"
+            checked={accessible}
+            onChange={onChangeAccessible}
           ></input>
         </label>
       </form>
@@ -257,7 +278,9 @@ class App extends Component {
     this.onChangeBeforeDate = this.onChangeBeforeDate.bind(this);
     this.onChangeConsecutiveDays = this.onChangeConsecutiveDays.bind(this);
     this.onChangeCellCarrier = this.onChangeCellCarrier.bind(this);
+    this.onChangeElectricity = this.onChangeElectricity.bind(this);
     this.onChangeCarAccess = this.onChangeCarAccess.bind(this);
+    this.onChangeAccessible = this.onChangeAccessible.bind(this);
     this.onReset = this.onReset.bind(this);
   }
 
@@ -265,8 +288,10 @@ class App extends Component {
     consecutiveDays: 1,
     afterDate: null,
     beforeDate: null,
-    carAccess: false,
     cellCarrier: "",
+    electricity: false,
+    carAccess: false,
+    accessible: false,
   };
 
   componentDidMount = () => {
@@ -313,11 +338,29 @@ class App extends Component {
     });
   };
 
+  onChangeElectricity = (e) => {
+    this.setState({
+      filters: {
+        ...this.state.filters,
+        electricity: e.target.checked,
+      },
+    });
+  };
+
   onChangeCarAccess = (e) => {
     this.setState({
       filters: {
         ...this.state.filters,
         carAccess: e.target.checked,
+      },
+    });
+  };
+
+  onChangeAccessible = (e) => {
+    this.setState({
+      filters: {
+        ...this.state.filters,
+        accessible: e.target.checked,
       },
     });
   };
@@ -370,7 +413,9 @@ class App extends Component {
             onChangeBeforeDate={this.onChangeBeforeDate}
             onChangeConsecutiveDays={this.onChangeConsecutiveDays}
             onChangeCellCarrier={this.onChangeCellCarrier}
+            onChangeElectricity={this.onChangeElectricity}
             onChangeCarAccess={this.onChangeCarAccess}
+            onChangeAccessible={this.onChangeAccessible}
             onReset={this.onReset}
           />
 
