@@ -163,7 +163,15 @@ const MapPopup = ({ location, info, onClose }) => {
             </span>
           ) : availableDates.length === 0 ? (
             <span className="Map-Popup-body__unavailable">
-              No availability found
+              No availability currently, but would you like to{" "}
+              <a
+                href={`https://campflare.com/campground/${info.metadata.facility_id}#:~:text=Notify%20on%20Availability`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                set up an availability alert
+              </a>
+              ?
             </span>
           ) : (
             <Fragment>
