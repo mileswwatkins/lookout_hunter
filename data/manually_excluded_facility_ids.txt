@@ -1,0 +1,7 @@
+# Facility IDs that _are_ tagged as fire lookouts by Recreation.gov, but are
+# actually _not_. This typically includes cabins that are _next to_ fire
+# lookout towers (but don't have access to them) or cabins built where towers
+# _previously_ existed.
+234271
+234138
+232349

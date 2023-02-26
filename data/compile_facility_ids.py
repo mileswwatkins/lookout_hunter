@@ -86,10 +86,8 @@ def get_recreationgov_search_ids():
     return facility_ids
 
 
-def get_manually_entered_ids():
-    logger.info("Reading manually-entered facility IDs")
-
-    with open(os.path.join(sys.path[0], 'manually_entered_facility_ids.txt'), 'r') as file:
+def get_ids_from_file(file_name):
+    with open(os.path.join(sys.path[0], file_name), 'r') as file:
         facility_ids = [
             facility_id
             for facility_id
@@ -99,7 +97,20 @@ def get_manually_entered_ids():
             if facility_id and not facility_id.startswith('#')
         ]
 
+    return facility_ids
+
+
+def get_manually_entered_ids():
+    logger.info("Reading manually-entered facility IDs")
+    facility_ids = get_ids_from_file('manually_entered_facility_ids.txt')
     logger.info("Found {} IDs".format(len(facility_ids)))
+    return facility_ids
+
+
+def get_manually_excluded_ids():
+    logger.info("Excluding manually-identified facility IDs that are _not_ actually lookouts")
+    facility_ids = get_ids_from_file('manually_excluded_facility_ids.txt')
+    logger.info("Found {} IDs to exclude".format(len(facility_ids)))
     return facility_ids
 
 
@@ -110,6 +121,9 @@ if __name__ == '__main__':
         get_firelookoutorg_ids() +
         get_recreationgov_search_ids()
     )
+
+    for id_ in get_manually_excluded_ids():
+        facility_ids.remove(id_)
 
     with open(os.path.join(sys.path[0], 'compiled_facility_ids.txt'), 'w') as file:
         # Sort the facility IDs so that it's easier to read
