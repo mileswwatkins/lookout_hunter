@@ -158,6 +158,7 @@ def get_campsite_availability(campsite_id):
     ''' Fetch which days a campsite is available for booking '''
 
     NOT_AVAIALABLE_CODES = [
+        'Closed',
         'Reserved',
         'Not Reservable',
         # "Not Yet Reservable"
