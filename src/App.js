@@ -222,7 +222,7 @@ class Map extends Component {
           height: "calc(100vh - 38px - 2.5rem - 1px)",
         }}
         mapStyle="mapbox://styles/mapbox/outdoors-v12"
-        mapboxAccessToken="pk.eyJ1IjoibWlsZXN3d2F0a2lucyIsImEiOiJjazgzeHRzZ2kxaDF3M2VwYXVpam1jdnphIn0.l2i1tiNOOQy2QsOPKrKNNg"
+        mapboxAccessToken="pk.eyJ1IjoibWlsZXN3d2F0a2lucyIsImEiOiJjbG0xcXl5cngzNnFyM2twaXk4cG83NXFyIn0.420VQRr7GT87ST-4uJ_9nA"
       >
         {this.props.data.map((i) => (
           <Marker
