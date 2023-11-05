@@ -134,6 +134,10 @@ const MapPopup = ({ location, info, onClose }) => {
       .map(([date, isAvailable]) => date);
   }
 
+  const isCurrentlyWinterSeason = [9, 10, 11, 0, 1].includes(
+    new Date().getMonth()
+  );
+
   return (
     <Popup
       {...location}
@@ -160,18 +164,14 @@ const MapPopup = ({ location, info, onClose }) => {
           {isLikelyClosed(info.availability) ? (
             <span className="Map-Popup-body__unavailable">
               Facility appears to be closed
+              {isCurrentlyWinterSeason
+                ? ", probably just for the winter season"
+                : ""}
             </span>
           ) : availableDates.length === 0 ? (
             <span className="Map-Popup-body__unavailable">
-              No availability currently, but would you like to{" "}
-              <a
-                href={`https://campflare.com/campground/${info.metadata.facility_id}#:~:text=Notify%20on%20Availability`}
-                target="_blank"
-                rel="noreferrer"
-              >
-                set up an availability alert
-              </a>
-              ?
+              Facility is fully booked, but to get notified of last-minute
+              availability just follow the link above and click the 🔔 button
             </span>
           ) : (
             <Fragment>
