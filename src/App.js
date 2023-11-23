@@ -431,7 +431,11 @@ class App extends Component {
             <div>
               <span className="Content-Attribution">
                 With ♥,{" "}
-                <a href="http://mileswwatkins.com" rel="noreferrer">
+                <a
+                  href="http://mileswwatkins.com"
+                  rel="noreferrer"
+                  target="_blank"
+                >
                   Miles Watkins
                 </a>
               </span>
@@ -439,6 +443,7 @@ class App extends Component {
                 <a
                   href="https://github.com/mileswwatkins/lookout_hunter"
                   rel="noreferrer"
+                  target="_blank"
                 >
                   Code on GitHub
                 </a>
