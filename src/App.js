@@ -219,7 +219,7 @@ class Map extends Component {
           width: "100%",
           // This is still a hack, but represents the full page height minus
           // the header text and padding and the hairline border between panes
-          height: "calc(100vh - 38px - 2.5rem - 1px)",
+          height: "calc(100vh - 38px - 2rem - 1px)",
         }}
         mapStyle="mapbox://styles/mapbox/outdoors-v12"
         mapboxAccessToken="pk.eyJ1IjoibWlsZXN3d2F0a2lucyIsImEiOiJjbG0xcXl5cngzNnFyM2twaXk4cG83NXFyIn0.420VQRr7GT87ST-4uJ_9nA"
@@ -409,7 +409,16 @@ class App extends Component {
     return (
       <Fragment>
         <header>
-          <h1 className="Header-Text">Lookout Hunter</h1>
+          <h1 className="Header-Title">Lookout Hunter</h1>
+          <span className="Header-Text">
+            <a
+              href="https://github.com/mileswwatkins/lookout_hunter#lookout-hunter"
+              rel="noreferrer"
+              target="_blank"
+            >
+              (Wait, what's a fire lookout?)
+            </a>
+          </span>
         </header>
 
         <section className="Content">

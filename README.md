@@ -2,7 +2,7 @@
 
 [View the website!](https://lookouthunter.s3.amazonaws.com/index.html)
 
-![Pickett Butte Lookout in Umpqua National Forest, Oregon](lookout.jpg)
+<img src="lookout.jpg" height="350" alt="Pickett Butte Lookout in Umpqua National Forest, Oregon">
 
 [Fire lookout towers](https://en.wikipedia.org/wiki/Fire_lookout_tower) are scattered across public lands in [almost every American state](http://www.nhlr.org/lookouts/), and are especially prevalent on public lands in the Mountain West. Many of these towers have been decommissioned, their function replaced by satellite and airial imagery. And some of these decommissioned towers are now available to rent via Recreation.gov!
 
