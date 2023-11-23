@@ -211,8 +211,8 @@ class Map extends Component {
     return (
       <ReactMapGL
         initialViewState={{
-          latitude: 45,
-          longitude: -118,
+          latitude: 42,
+          longitude: -115,
           zoom: 4.5,
         }}
         style={{
@@ -416,7 +416,7 @@ class App extends Component {
               rel="noreferrer"
               target="_blank"
             >
-              (Wait, what's a fire lookout?)
+              (Wait, what's a lookout?)
             </a>
           </span>
         </header>
