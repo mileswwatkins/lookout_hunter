@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: Install required HTML parsing libraries
         run: sudo apt-get install -y libxml2-dev libxslt-dev python3-dev
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install Poetry
         run: pipx install poetry
       - uses: actions/setup-python@v4
@@ -25,7 +25,7 @@ jobs:
       - name: Run scraper
         run: poetry run data/get_availability.py
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
