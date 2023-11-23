@@ -274,18 +274,17 @@ Otherwise, maybe once per year `poetry run data/compile_facility_ids.py` should 
 
 The front-end is hosted as a website [here](https://lookouthunter.s3.amazonaws.com/index.html) on AWS S3, but if you want to develop it follow the directions below.
 
-### Requirements and setup
+### Requirements
 
-- Node 14
-- Yarn
-- `yarn install`
+- Node 20
+- `npm install`
 
 ### Running
 
-Use `yarn start`, which runs the app and makes it available at http://localhost:3000.
+Use `npm run start`, which runs the app and makes it available at http://localhost:3000.
 
 ### Deployment
 
-Run `yarn deploy` to build and deploy to AWS S3. This requires AWS credentials for the S3 bucket in question.
+Run `npm run deploy` to build and deploy to AWS S3. This requires AWS credentials for the S3 bucket in question.
 
 More commonly, you'll [use GitHub Actions](https://github.com/mileswwatkins/lookout_hunter/actions/workflows/deploy-frontend.yml) to deploy the front-end.
