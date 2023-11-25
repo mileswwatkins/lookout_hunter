@@ -2,16 +2,26 @@ header {
   padding: 1rem 1.5rem;
   border-bottom: 1px solid black;
   display: flex;
+  align-items: center;
+}
+
+.Header-Logo {
+  height: 2.5rem;
+  margin-right: 1rem;
+}
+
+.Header-Text {
+  display: flex;
   align-items: baseline;
 }
 
 .Header-Title {
   margin: 0;
-  margin-right: 1.5rem;
+  margin-right: 1rem;
   font-size: 2rem;
 }
 
-.Header-Text {
+.Header-Explainer {
   margin: 0;
   font-size: 0.75rem;
   font-style: italic;
@@ -23,6 +33,7 @@ header {
 
 .Content-FilterPane {
   flex-basis: 30%;
+  min-width: 250px;
   padding-left: 1.5rem;
   padding-right: 1rem;
   padding-bottom: 1.5rem;
@@ -34,6 +45,7 @@ header {
 
 .Content-Attribution {
   display: block;
+  font-size: 0.75rem;
 }
 
 .Filters-Header {

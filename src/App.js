@@ -72,7 +72,7 @@ const Filters = ({
         </label>
 
         <label>
-          For this many consecutive days:{"\u00A0"}
+          How many consecutive days:{"\u00A0"}
           <input
             type="number"
             min={1}
@@ -409,16 +409,23 @@ class App extends Component {
     return (
       <Fragment>
         <header>
-          <h1 className="Header-Title">Lookout Hunter</h1>
-          <span className="Header-Text">
-            <a
-              href="https://github.com/mileswwatkins/lookout_hunter#lookout-hunter"
-              rel="noreferrer"
-              target="_blank"
-            >
-              (Wait, what's a lookout?)
-            </a>
-          </span>
+          <img
+            src="logo.svg"
+            alt="the silhouette of a fire lookout tower"
+            className="Header-Logo"
+          ></img>
+          <div className="Header-Text">
+            <h1 className="Header-Title">Lookout Hunter</h1>
+            <span className="Header-Explainer">
+              <a
+                href="https://github.com/mileswwatkins/lookout_hunter#lookout-hunter"
+                rel="noreferrer"
+                target="_blank"
+              >
+                (Wait, what's a lookout?)
+              </a>
+            </span>
+          </div>
         </header>
 
         <section className="Content">
@@ -455,6 +462,12 @@ class App extends Component {
                   target="_blank"
                 >
                   Code on GitHub
+                </a>
+              </span>
+              <span className="Content-Attribution">
+                Logo based on work by{" "}
+                <a href="https://thenounproject.com/icon/watchtower-1247287/">
+                  Creative Mania
                 </a>
               </span>
             </div>
