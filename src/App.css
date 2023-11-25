@@ -38,6 +38,7 @@ header {
 
 .Filters-Reset {
   margin: 0;
+  font-size: 1rem;
 }
 
 form > label {

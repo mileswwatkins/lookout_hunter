@@ -144,7 +144,7 @@ const Filters = ({
         <input
           type="reset"
           className="Filters-Reset"
-          value="Reset all filters"
+          value="Reset filters"
           onClick={onReset}
         ></input>
       </form>
