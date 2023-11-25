@@ -270,7 +270,7 @@ class Map extends Component {
                   : "") +
                 (checkFilters(i, this.props.filters)
                   ? "Map-circle__active "
-                  : "Map-circle__inactive ")
+                  : "")
               }
               onClick={(e) => {
                 this.setState({

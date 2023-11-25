@@ -128,19 +128,20 @@ form > label {
 }
 
 .Map-circle {
+  cursor: pointer;
   width: 10px;
   height: 10px;
-  border-radius: 5px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0);
+  border-style: solid;
+  border-width: 1px;
+  border-color: #d00;
 }
 
 .Map-circle__active {
   background: #d00;
 }
 
-.Map-circle__inactive {
-  background: #6e6e6e;
-}
-
 .Map-circle__selected {
-  box-shadow: 0px 0px 0px 1px black;
+  box-shadow: 0px 0px 0px 3px #d00;
 }
