@@ -38,6 +38,7 @@ header {
 
 .Filters-Reset {
   margin: 0;
+  margin-bottom: 1.5rem;
   font-size: 1rem;
 }
 
@@ -102,9 +103,9 @@ form > label {
 }
 
 .Map-Popup-header {
-  font-size: 16px;
+  font-size: 1.25rem;
   font-weight: bold;
-  line-height: 14px;
+  line-height: 1.25rem;
 }
 
 .Map-Popup-body {

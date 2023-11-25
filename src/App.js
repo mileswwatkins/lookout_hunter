@@ -175,6 +175,7 @@ const MapPopup = ({ location, info, onClose }) => {
       anchor="bottom"
       dynamicPosition={false}
       captureScroll={true}
+      maxWidth="300px"
     >
       <div className="Map-Popup">
         <span className="Map-Popup-header">
