@@ -4,6 +4,7 @@
   "private": false,
   "dependencies": {
     "date-fns": "^2.29.3",
+    "lodash": "^4.17.21",
     "mapbox-gl": "^2.7.1",
     "react": "^17.0.2",
     "react-datepicker": "^4.10.0",

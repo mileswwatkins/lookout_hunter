@@ -1,4 +1,5 @@
 import { add, sub } from "date-fns";
+import { range } from "lodash";
 import React, { Component, Fragment } from "react";
 import ReactMapGL, { Marker, Popup } from "react-map-gl";
 import DatePicker from "react-datepicker";
@@ -12,9 +13,9 @@ const Filters = ({
   onChangeAfterDate,
   beforeDate,
   onChangeBeforeDate,
-  consecutiveDaysMax,
-  consecutiveDays,
-  onChangeConsecutiveDays,
+  consecutiveNightsMax,
+  consecutiveNights,
+  onChangeConsecutiveNights,
   allCellCarriers,
   cellCarrier,
   onChangeCellCarrier,
@@ -36,91 +37,116 @@ const Filters = ({
 
   return (
     <section className="Filters">
-      <div className="Filters-Header">
-        <h2 className="Filters-Header-Label">Filters</h2>
-        <input
-          type="reset"
-          className="Filters-Header-Reset"
-          value="Reset filters"
-          onClick={onReset}
-        ></input>
-      </div>
-
       <form onSubmit={(e) => e.preventDefault()}>
-        <label>
-          After date:{"\u00A0"}
+        <div className="Filter-Text">
+          I'd like to{" "}
+          <a
+            href="https://github.com/mileswwatkins/lookout_hunter#lookout-hunter"
+            rel="noreferrer"
+            target="_blank"
+          >
+            camp in a fire lookout tower
+          </a>{" "}
+          anytime between{" "}
           <DatePicker
             selected={afterDate}
             onChange={onChangeAfterDate}
             minDate={afterDateMin}
             maxDate={afterDateMax}
             dateFormat="MMMM d"
-            className="Filter-Label-Text"
-          />
-        </label>
-
-        <label>
-          Before date:{"\u00A0"}
+            className="Filter-DateText"
+          />{" "}
+          and{" "}
           <DatePicker
             selected={beforeDate}
             onChange={onChangeBeforeDate}
             minDate={beforeDateMin}
             maxDate={beforeDateMax}
             dateFormat="MMMM d"
-            className="Filter-Label-Text"
+            className="Filter-DateText"
           />
-        </label>
-
-        <label>
-          How many consecutive days:{"\u00A0"}
-          <input
-            type="number"
-            min={1}
-            max={consecutiveDaysMax}
-            step={1}
-            value={consecutiveDays}
-            onChange={onChangeConsecutiveDays}
-          ></input>
-        </label>
-
-        <label>
-          Has cell reception from carrier:{"\u00A0"}
-          <select value={cellCarrier} onChange={onChangeCellCarrier}>
-            <option value=""></option>
-            {allCellCarriers.map((i) => (
-              <option value={i} key={i}>
+          , for at least
+          <select
+            onChange={onChangeConsecutiveNights}
+            value={consecutiveNights}
+            className="Filter-SelectText"
+          >
+            {range(1, consecutiveNightsMax).map((i) => (
+              <option key={i} value={i}>
                 {i}
               </option>
             ))}
           </select>
-        </label>
-
-        <label>
-          Has electricity:{"\u00A0"}
-          <input
-            type="checkbox"
-            checked={electricity}
-            onChange={onChangeElectricity}
-          ></input>
-        </label>
-
-        <label>
-          Accessible by car:{"\u00A0"}
-          <input
-            type="checkbox"
-            checked={carAccess}
-            onChange={onChangeCarAccess}
-          ></input>
-        </label>
-
-        <label>
-          ADA accessible:{"\u00A0"}
-          <input
-            type="checkbox"
-            checked={accessible}
-            onChange={onChangeAccessible}
-          ></input>
-        </label>
+          night{consecutiveNights > 1 && "s"}.
+        </div>
+        <div className="Filter-Text">
+          Additionally, I'd like the lookout to:
+          <ul className="Filter-List">
+            <li className="Filter-ListItem">
+              {/* This is unexpected UX, but it's more visually pleasing if all `li`s have checkboxes */}
+              <input
+                type="checkbox"
+                className="Filter-Checkbox"
+                checked={Boolean(cellCarrier)}
+                onClick={(e) => {
+                  if (cellCarrier) {
+                    onChangeCellCarrier({ target: { value: "" } });
+                  }
+                }}
+              ></input>{" "}
+              Have
+              <select
+                value={cellCarrier}
+                onChange={onChangeCellCarrier}
+                className="Filter-SelectText"
+              >
+                <option value=""></option>
+                {allCellCarriers.map((i) => (
+                  <option value={i} key={i}>
+                    {i}
+                  </option>
+                ))}
+              </select>
+              reception
+            </li>
+            <li className="Filter-ListItem">
+              <input
+                type="checkbox"
+                id="checkbox-electricity"
+                className="Filter-Checkbox"
+                checked={electricity}
+                onChange={onChangeElectricity}
+              ></input>
+              <label htmlFor="checkbox-electricity">Have electricity</label>
+            </li>
+            <li className="Filter-ListItem">
+              <input
+                type="checkbox"
+                id="checkbox-carAccess"
+                className="Filter-Checkbox"
+                checked={carAccess}
+                onChange={onChangeCarAccess}
+              ></input>
+              <label htmlFor="checkbox-carAccess">Be accessible by car</label>
+            </li>
+            <li className="Filter-ListItem">
+              <input
+                type="checkbox"
+                id="checkbox-accessible"
+                className="Filter-Checkbox"
+                checked={accessible}
+                onChange={onChangeAccessible}
+              ></input>
+              <label htmlFor="checkbox-accessible">Be ADA accessible</label>
+            </li>
+          </ul>
+        </div>
+        <input
+          type="reset"
+          className="Filters-Reset"
+          value="Reset all filters"
+          onClick={onReset}
+        ></input>
       </form>
     </section>
   );
@@ -175,7 +201,10 @@ const MapPopup = ({ location, info, onClose }) => {
             </span>
           ) : (
             <Fragment>
-              <span>Available for {availableDates.length} total days:</span>
+              <span>
+                Available for {availableDates.length} nights over the next 6
+                months:
+              </span>
               <ul className="Map-Popup-list">
                 {availableDates.map((date) => (
                   <li key={date}>{reformatDate(date)}</li>
@@ -284,7 +313,7 @@ class App extends Component {
 
     this.onChangeAfterDate = this.onChangeAfterDate.bind(this);
     this.onChangeBeforeDate = this.onChangeBeforeDate.bind(this);
-    this.onChangeConsecutiveDays = this.onChangeConsecutiveDays.bind(this);
+    this.onChangeConsecutiveNights = this.onChangeConsecutiveNights.bind(this);
     this.onChangeCellCarrier = this.onChangeCellCarrier.bind(this);
     this.onChangeElectricity = this.onChangeElectricity.bind(this);
     this.onChangeCarAccess = this.onChangeCarAccess.bind(this);
@@ -293,9 +322,9 @@ class App extends Component {
   }
 
   initialFiltersState = {
-    consecutiveDays: 1,
-    afterDate: null,
-    beforeDate: null,
+    consecutiveNights: 1,
+    afterDate: new Date(),
+    beforeDate: add(new Date(), { months: 6, days: 1 }),
     cellCarrier: "",
     electricity: false,
     carAccess: false,
@@ -310,11 +339,11 @@ class App extends Component {
       });
   };
 
-  onChangeConsecutiveDays = (e) => {
+  onChangeConsecutiveNights = (e) => {
     this.setState({
       filters: {
         ...this.state.filters,
-        consecutiveDays: Number(e.target.value),
+        consecutiveNights: Number(e.target.value),
       },
     });
   };
@@ -387,7 +416,7 @@ class App extends Component {
       return "";
     }
 
-    const consecutiveDaysMax = Math.max(
+    const consecutiveNightsMax = Math.max(
       ...this.state.data
         .filter((i) => i.metadata.facility_rules.maxConsecutiveStay)
         .map((i) => i.metadata.facility_rules.maxConsecutiveStay.value)
@@ -414,29 +443,18 @@ class App extends Component {
             alt="the silhouette of a fire lookout tower"
             className="Header-Logo"
           ></img>
-          <div className="Header-Text">
-            <h1 className="Header-Title">Lookout Hunter</h1>
-            <span className="Header-Explainer">
-              <a
-                href="https://github.com/mileswwatkins/lookout_hunter#lookout-hunter"
-                rel="noreferrer"
-                target="_blank"
-              >
-                (Wait, what's a lookout?)
-              </a>
-            </span>
-          </div>
+          <h1 className="Header-Title">Lookout Hunter</h1>
         </header>
 
         <section className="Content">
           <div className="Content-FilterPane">
             <Filters
               {...this.state.filters}
-              consecutiveDaysMax={consecutiveDaysMax}
+              consecutiveNightsMax={consecutiveNightsMax}
               allCellCarriers={allCellCarriers}
               onChangeAfterDate={this.onChangeAfterDate}
               onChangeBeforeDate={this.onChangeBeforeDate}
-              onChangeConsecutiveDays={this.onChangeConsecutiveDays}
+              onChangeConsecutiveNights={this.onChangeConsecutiveNights}
               onChangeCellCarrier={this.onChangeCellCarrier}
               onChangeElectricity={this.onChangeElectricity}
               onChangeCarAccess={this.onChangeCarAccess}

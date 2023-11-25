@@ -1,37 +1,37 @@
 import { isValid } from "date-fns";
 import { parseAvailabilityDate } from "./utils";
 
-const checkDateFilters = (item, consecutiveDays, afterDate, beforeDate) => {
+const checkDateFilters = (item, consecutiveNights, afterDate, beforeDate) => {
   if (item.availability === null) {
     return false;
   }
 
-  if (isNaN(consecutiveDays)) {
+  if (isNaN(consecutiveNights)) {
     return true;
   }
 
   const afterDateIsSet = isValid(afterDate);
   const beforeDateIsSet = isValid(beforeDate);
 
-  let consecutiveDaysSeen = 0;
-  for (const [day, isDayAvailable] of Object.entries(item.availability)) {
-    const dayDate = parseAvailabilityDate(day);
-    // TODO: This filter seems to apply itself one day off, but the bug has
+  let consecutiveNightsSeen = 0;
+  for (const [night, isNightAvailable] of Object.entries(item.availability)) {
+    const nightDate = parseAvailabilityDate(night);
+    // TODO: This filter seems to apply itself one night off, but the bug has
     // been a little tricky to fix
-    if (afterDateIsSet && dayDate < afterDate) {
+    if (afterDateIsSet && nightDate < afterDate) {
       continue;
     }
-    if (beforeDateIsSet && dayDate > beforeDate) {
+    if (beforeDateIsSet && nightDate > beforeDate) {
       break;
     }
 
-    if (isDayAvailable) {
-      consecutiveDaysSeen += 1;
+    if (isNightAvailable) {
+      consecutiveNightsSeen += 1;
     } else {
-      consecutiveDaysSeen = 0;
+      consecutiveNightsSeen = 0;
     }
 
-    if (consecutiveDaysSeen >= consecutiveDays) {
+    if (consecutiveNightsSeen >= consecutiveNights) {
       return true;
     }
   }
@@ -91,7 +91,7 @@ const checkAccessibleFilter = (item, accessible) => {
 const checkFilters = (item, filters) =>
   checkDateFilters(
     item,
-    filters.consecutiveDays,
+    filters.consecutiveNights,
     filters.afterDate,
     filters.beforeDate
   ) &&

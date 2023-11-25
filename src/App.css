@@ -10,21 +10,9 @@ header {
   margin-right: 1rem;
 }
 
-.Header-Text {
-  display: flex;
-  align-items: baseline;
-}
-
 .Header-Title {
   margin: 0;
-  margin-right: 1rem;
   font-size: 2rem;
-}
-
-.Header-Explainer {
-  margin: 0;
-  font-size: 0.75rem;
-  font-style: italic;
 }
 
 .Content {
@@ -33,7 +21,7 @@ header {
 
 .Content-FilterPane {
   flex-basis: 30%;
-  min-width: 250px;
+  min-width: 300px;
   padding-left: 1.5rem;
   padding-right: 1rem;
   padding-bottom: 1.5rem;
@@ -48,20 +36,8 @@ header {
   font-size: 0.75rem;
 }
 
-.Filters-Header {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-}
-
-.Filters-Header-Label {
+.Filters-Reset {
   margin: 0;
-}
-
-.Filters-Header-Reset {
-  margin-top: auto;
-  margin-bottom: auto;
 }
 
 form > label {
@@ -70,16 +46,52 @@ form > label {
   margin-bottom: 0.25rem;
 }
 
-.Filter-Label-Text {
-  width: 80px;
+.Filter-Text {
+  font-size: 1.25rem;
+  line-height: 1.65rem;
+  margin: 1.5rem 0;
+}
+
+.Filter-DateText {
+  width: 100px;
+  font-size: 1rem;
+  display: inline !important;
+}
+
+.Filter-SelectText {
+  font-size: 1rem;
+  margin: 0 0.4rem;
+}
+
+.Filter-List {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  margin-top: 0.25rem;
+  padding-left: 1.5rem;
+}
+
+.Filter-ListItem {
+  display: flex;
+  align-items: center;
 }
 
 .react-datepicker-wrapper {
-  display: inline;
+  display: inline !important;
 }
 
 .react-datepicker__input-container {
-  display: inline;
+  display: inline !important;
+}
+
+/* Prevent the date picker from pushing the following text to a new line */
+.react-datepicker__tab-loop {
+  position: absolute;
+}
+
+.Filter-Checkbox {
+  transform: scale(1.15);
+  margin-right: 0.55rem;
 }
 
 .Map-Popup {
