@@ -446,7 +446,14 @@ class App extends Component {
 
             <div>
               <span className="Content-Attribution">
-                With ♥,{" "}
+                <a
+                  href="https://github.com/mileswwatkins/lookout_hunter"
+                  rel="noreferrer"
+                  target="_blank"
+                >
+                  Coded with ♥
+                </a>{" "}
+                by{" "}
                 <a
                   href="http://mileswwatkins.com"
                   rel="noreferrer"
@@ -456,18 +463,9 @@ class App extends Component {
                 </a>
               </span>
               <span className="Content-Attribution">
-                <a
-                  href="https://github.com/mileswwatkins/lookout_hunter"
-                  rel="noreferrer"
-                  target="_blank"
-                >
-                  Code on GitHub
-                </a>
-              </span>
-              <span className="Content-Attribution">
-                Logo based on work by{" "}
+                Logo based on{" "}
                 <a href="https://thenounproject.com/icon/watchtower-1247287/">
-                  Creative Mania
+                  work by Creative Mania
                 </a>
               </span>
             </div>
