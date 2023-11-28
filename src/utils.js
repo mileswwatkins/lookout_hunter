@@ -16,7 +16,7 @@ const formatFacilityName = (name) => {
     .replace(/ RENTAL$/i, "")
     // Remove the parentheticals
     .replace(/ \(.+\)$/, "")
-    .replace(/MTN(?=[\. ])/, "MOUNTAIN")
+    .replace(/MTN/, "MOUNTAIN")
     .replace(/MT\./, "MOUNT")
     // There are a few remaining periods that don't make sense
     .replace(". ", " ");

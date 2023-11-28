@@ -11,3 +11,6 @@ build
 
 # Data
 availability.json
+
+# Secrets
+.env*
