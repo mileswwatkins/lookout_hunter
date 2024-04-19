@@ -198,7 +198,8 @@ const MapPopup = ({ location, info, onClose }) => {
           ) : availableDates.length === 0 ? (
             <span className="Map-Popup-body__unavailable">
               Facility is fully booked, but to get notified of last-minute
-              availability just follow the link above and click the 🔔 button
+              availability just follow the link above and click on their
+              "🔔 Set Availability Alert" button
             </span>
           ) : (
             <Fragment>
