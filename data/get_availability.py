@@ -113,7 +113,6 @@ def get_facility_metadata(facility_id):
     del campground_metadata['order_components']
     del campground_metadata['org_id']
     del campground_metadata['receipt_autoprint']
-    assert campground_metadata['receipt_custom_text'] == ""
     del campground_metadata['receipt_custom_text']
     del campground_metadata['state']
     del campground_metadata['updated_by']

@@ -9,3 +9,6 @@
 
 # Additional facility ID sourced from https://www.firelookout.com
 251769
+
+# Additional facility ID sourced from https://www.fs.usda.gov/recarea/kootenai/recarea/?recid=80558
+250012
