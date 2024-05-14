@@ -67,6 +67,11 @@ coordinate_overrides = {
     '10132085': {
         'facility_latitude': 47.864,
         'facility_longitude': -120.471
+    },
+    # Flag Point Lookout, Oregon
+    '10289153': {
+        'facility_latitude': 45.318,
+        'facility_longitude': -121.467
     }
 }
 
