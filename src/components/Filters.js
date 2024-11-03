@@ -32,7 +32,7 @@ const Filters = ({
   const afterDateMax = sub(beforeDate || beforeDateMax, { days: 1 });
 
   return (
-    <section className="Filters">
+    <section>
       <form onSubmit={(e) => e.preventDefault()}>
         <div className="Filter-Text">
           I'd like to{" "}
@@ -139,7 +139,7 @@ const Filters = ({
         </div>
         <input
           type="reset"
-          className="Filters-Reset"
+          className="Filter-Reset"
           value="Reset filters"
           onClick={onReset}
         ></input>

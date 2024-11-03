@@ -4,16 +4,15 @@
 }
 
 .FilterPane {
-  padding-top: 1rem;
   flex-basis: 30%;
   min-width: 320px;
-  padding-left: 1.5rem;
-  padding-right: 1rem;
-  padding-bottom: 1.5rem;
+  padding: 1.5rem;
   display: flex;
   flex-direction: column;
+  gap: 4rem;
   justify-content: space-between;
   background-color: #faf3ce;
+  overflow-y: scroll;
 }
 
 a {
