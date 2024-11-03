@@ -1,0 +1,19 @@
+.Logotype {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  margin-top: 0.5rem;
+  margin-bottom: 4rem;
+  padding: 0;
+}
+
+.Logotype-Logo {
+  height: 2.5rem;
+  margin-right: 1rem;
+}
+
+.Logotype-Title {
+  margin: 0;
+  font-size: 2rem;
+  font-family: NationalPark;
+}

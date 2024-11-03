@@ -1,0 +1,59 @@
+.Filters-Reset {
+  margin: 0;
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+}
+
+form > label {
+  font-size: 1rem;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.Filter-Text {
+  font-size: 1.25rem;
+  line-height: 1.65rem;
+  margin: 1.5rem 0;
+}
+
+.Filter-DateText {
+  width: 100px;
+  font-size: 1rem;
+  display: inline !important;
+}
+
+.Filter-SelectText {
+  font-size: 1rem;
+  margin: 0 0.4rem;
+}
+
+.Filter-List {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  margin-top: 0.25rem;
+  padding-left: 1.5rem;
+}
+
+.Filter-ListItem {
+  display: flex;
+  align-items: center;
+}
+
+.react-datepicker-wrapper {
+  display: inline !important;
+}
+
+.react-datepicker__input-container {
+  display: inline !important;
+}
+
+/* Prevent the date picker from pushing the following text to a new line */
+.react-datepicker__tab-loop {
+  position: absolute;
+}
+
+.Filter-Checkbox {
+  transform: scale(1.15);
+  margin-right: 0.55rem;
+}

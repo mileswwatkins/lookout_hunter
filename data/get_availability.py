@@ -152,7 +152,7 @@ def get_facility_metadata(facility_id):
     # missing those values
     if campground_metadata['facility_latitude'] == 0 and campground_metadata['facility_longitude'] == 0:
         coordinates = coordinate_overrides.get(campground_metadata['facility_id'])
-        assert coordinates, f"Found new listing that's missing geographic coordinates and requires a manual override. `facility_id` is: {campground_metadata['facility_id']}"
+        assert coordinates, f"Found a listing that's missing geographic coordinates and requires a manual override. `facility_id` is: {campground_metadata['facility_id']}"
         campground_metadata.update(coordinates)
 
     return campground_metadata

@@ -1,0 +1,45 @@
+.mapboxgl-popup-content {
+  background-color: #faf3ce;
+}
+
+.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip {
+  border-top-color: #faf3ce;
+}
+
+.Map-Popup {
+  max-height: 150px;
+  overflow: auto;
+  margin-top: 8px;
+}
+
+.Map-Popup-header {
+  font-size: 1.25rem;
+  font-weight: bold;
+  line-height: 1.25rem;
+  font-family: NationalPark;
+}
+
+.Map-Popup-header > a {
+  color: #000;
+}
+
+.Map-Popup-body {
+  font-size: 12px;
+  line-height: 16px;
+  margin-top: 12px;
+  margin-bottom: 0;
+}
+
+.Map-Popup-body > ul {
+  margin-left: 0;
+  padding-left: 20px;
+}
+
+.Map-Popup-body__unavailable {
+  font-style: italic;
+}
+
+.Map-Popup-list {
+  margin-top: 4px;
+  margin-bottom: 0;
+}
