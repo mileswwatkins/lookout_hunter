@@ -84,7 +84,7 @@ const Filters = ({
                 type="checkbox"
                 className="Filter-Checkbox"
                 checked={Boolean(cellCarrier)}
-                onClick={(e) => {
+                onChange={(e) => {
                   if (cellCarrier) {
                     onChangeCellCarrier({ target: { value: "" } });
                   }
