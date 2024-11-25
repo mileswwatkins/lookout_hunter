@@ -22,6 +22,10 @@ class Map extends Component {
     },
   };
 
+  closePopup = () => {
+    this.setState({ popup: { ...this.initialPopupState } });
+  };
+
   render() {
     return (
       <ReactMapGL
@@ -72,12 +76,7 @@ class Map extends Component {
         ))}
 
         {this.state.popup.visible && (
-          <MapPopup
-            {...this.state.popup}
-            onClose={() =>
-              this.setState({ popup: { ...this.initialPopupState } })
-            }
-          />
+          <MapPopup {...this.state.popup} onClose={this.closePopup} />
         )}
       </ReactMapGL>
     );

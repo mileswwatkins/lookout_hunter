@@ -18,8 +18,9 @@ const MapPopup = ({ location, info, onClose }) => {
   return (
     <Popup
       {...location}
-      closeOnClick={false}
-      closeButton={true}
+      closeButton={false}
+      closeOnClick={true}
+      closeOnMove={false}
       onClose={onClose}
       tipSize={0}
       offsetTop={-10}
