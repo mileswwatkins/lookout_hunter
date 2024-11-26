@@ -22,8 +22,13 @@ class Map extends Component {
     },
   };
 
-  closePopup = () => {
-    this.setState({ popup: { ...this.initialPopupState } });
+  // Close popup only if the user _isn't_ trying to invoke a different popup
+  onMapClick = (e) => {
+    const isCircleClick =
+      !e.originalEvent.target.classList.contains("mapboxgl-canvas");
+    if (!isCircleClick && this.state.popup.visible) {
+      this.setState({ popup: { ...this.initialPopupState } });
+    }
   };
 
   render() {
@@ -39,6 +44,7 @@ class Map extends Component {
           process.env.REACT_APP_MAPBOX_TOKEN ??
           "pk.eyJ1IjoibWlsZXN3d2F0a2lucyIsImEiOiJjbG0xcXl5cngzNnFyM2twaXk4cG83NXFyIn0.420VQRr7GT87ST-4uJ_9nA"
         }
+        onClick={this.onMapClick}
       >
         {this.props.data.map((i) => (
           <Marker
@@ -75,9 +81,7 @@ class Map extends Component {
           </Marker>
         ))}
 
-        {this.state.popup.visible && (
-          <MapPopup {...this.state.popup} onClose={this.closePopup} />
-        )}
+        {this.state.popup.visible && <MapPopup {...this.state.popup} />}
       </ReactMapGL>
     );
   }

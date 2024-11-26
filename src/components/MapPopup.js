@@ -3,7 +3,7 @@ import { Popup } from "react-map-gl";
 import { formatFacilityName, reformatDate, isLikelyClosed } from "../utils";
 import "./MapPopup.css";
 
-const MapPopup = ({ location, info, onClose }) => {
+const MapPopup = ({ location, info }) => {
   let availableDates = [];
   if (info.availability) {
     availableDates = Object.entries(info.availability)
@@ -19,15 +19,20 @@ const MapPopup = ({ location, info, onClose }) => {
     <Popup
       {...location}
       closeButton={false}
-      closeOnClick={true}
-      closeOnMove={false}
-      onClose={onClose}
+      // This closing is instead handled by a handler on the map itself, which
+      // is how you can switch between circles' popups without closing them
+      // first
+      closeOnClick={false}
       tipSize={0}
       offsetTop={-10}
       anchor="bottom"
       dynamicPosition={false}
       captureScroll={true}
       maxWidth="300px"
+      // This isn't ideal for accessibility, but if this _isn't_ set to `false`
+      // then the first anchor tag in the first popup that's opened gets an
+      // undesirable focus/highlight in macOS Safari
+      focusAfterOpen={false}
     >
       <div className="Map-Popup">
         <span className="Map-Popup-header">
