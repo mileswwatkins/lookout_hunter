@@ -73,7 +73,8 @@ const Filters = ({
               </option>
             ))}
           </select>
-          night{consecutiveNights > 1 && "s"}.
+          {consecutiveNights > 1 && "consecutive "}night
+          {consecutiveNights > 1 && "s"}.
         </div>
         <div className="Filter-Text">
           Additionally, I'd like the lookout to:
