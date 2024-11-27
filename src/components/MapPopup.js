@@ -79,6 +79,7 @@ const MapPopup = ({ location, info }) => {
               <DatePicker
                 inline
                 fixedHeight
+                calendarClassName="Map-Popup-calendar"
                 // Helps with styling enough to be okay with the loss of
                 // accessibility
                 disabledKeyboardNavigation

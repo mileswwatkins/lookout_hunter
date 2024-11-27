@@ -57,3 +57,14 @@
   padding: 12px;
   padding-bottom: 9px;
 }
+
+/* Avoid making the calendar appear selectable/editable */
+.Map-Popup-calendar .react-datepicker__day {
+  cursor: default;
+}
+.Map-Popup-calendar .react-datepicker__day:hover {
+  background-color: #ffffff;
+}
+.Map-Popup-calendar .react-datepicker__day--highlighted:hover {
+  background-color: #3dcc4a;
+}
