@@ -17,10 +17,24 @@ const Attribution = () => {
         </a>
       </span>
       <span className="Attribution">
-        Logo based on{" "}
-        <a href="https://thenounproject.com/icon/watchtower-1247287/">
+        Logo and favicon based on{" "}
+        <a
+          href="https://thenounproject.com/icon/watchtower-1247287/"
+          rel="noreferrer"
+          target="_blank"
+        >
           work by Creative Mania
         </a>
+      </span>
+      <span className="Attribution">
+        <a
+          href="https://thenounproject.com/icon/external-3776998/"
+          rel="noreferrer"
+          target="_blank"
+        >
+          Link icon
+        </a>{" "}
+        by Adrien Coquet
       </span>
     </div>
   );

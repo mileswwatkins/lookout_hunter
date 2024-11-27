@@ -1,15 +1,6 @@
-.mapboxgl-popup-content {
-  background-color: #faf3ce;
-}
-
-.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip {
-  border-top-color: #faf3ce;
-}
-
 .Map-Popup {
-  max-height: 150px;
-  overflow: auto;
   margin-top: 0;
+  width: 242px;
 }
 
 .Map-Popup-header {
@@ -21,6 +12,12 @@
 
 .Map-Popup-header > a {
   color: #000;
+  width: 200px;
+}
+
+.Map-Popup-link-icon {
+  height: 14px;
+  margin-left: 5px;
 }
 
 .Map-Popup-body {
@@ -39,7 +36,24 @@
   font-style: italic;
 }
 
-.Map-Popup-list {
-  margin-top: 2px;
-  margin-bottom: 0;
+.Map-Popup-body__available {
+  font-style: italic;
+  display: block;
+  margin-bottom: 4px;
+}
+
+/* Override values from third-party libraries */
+
+/* Use the theme color for the popup background */
+.mapboxgl-popup-content {
+  background-color: #faf3ce;
+}
+.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip {
+  border-top-color: #faf3ce;
+}
+
+/* Apply uniform spacing to the tooltip container */
+.mapboxgl-popup-content {
+  padding: 12px;
+  padding-bottom: 9px;
 }

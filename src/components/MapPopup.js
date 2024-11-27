@@ -1,7 +1,10 @@
 import { Fragment } from "react";
 import { Popup } from "react-map-gl";
-import { formatFacilityName, reformatDate, isLikelyClosed } from "../utils";
+import { formatFacilityName, isLikelyClosed } from "../utils";
+import DatePicker from "react-datepicker";
 import "./MapPopup.css";
+import "react-datepicker/dist/react-datepicker.css";
+import { add } from "date-fns";
 
 const MapPopup = ({ location, info }) => {
   let availableDates = [];
@@ -14,6 +17,9 @@ const MapPopup = ({ location, info }) => {
   const isCurrentlyWinterSeason = [9, 10, 11, 0, 1].includes(
     new Date().getMonth(),
   );
+
+  const minDate = new Date();
+  const maxDate = add(new Date(), { months: 6, days: 1 });
 
   return (
     <Popup
@@ -42,6 +48,11 @@ const MapPopup = ({ location, info }) => {
             rel="noopener noreferrer"
           >
             {formatFacilityName(info.metadata.facility_name)}
+            <img
+              src="link.svg"
+              alt="link icon"
+              className="Map-Popup-link-icon"
+            ></img>
           </a>
         </span>
         <div className="Map-Popup-body">
@@ -60,15 +71,22 @@ const MapPopup = ({ location, info }) => {
             </span>
           ) : (
             <Fragment>
-              <span>
-                Available for {availableDates.length} nights over the next 6
-                months:
+              <span className="Map-Popup-body__available">
+                Available for {availableDates.length} night
+                {availableDates.length > 1 && "s"} over the next 6 months. Click
+                on the link above to book.
               </span>
-              <ul className="Map-Popup-list">
-                {availableDates.map((date) => (
-                  <li key={date}>{reformatDate(date)}</li>
-                ))}
-              </ul>
+              <DatePicker
+                inline
+                // Helps with styling enough to be okay with the loss of
+                // accessibility
+                disabledKeyboardNavigation
+                minDate={minDate}
+                maxDate={maxDate}
+                highlightDates={availableDates.map((date) => new Date(date))}
+                // Don't suggest to the user that they can select anything
+                selectedDates={[]}
+              />
             </Fragment>
           )}
         </div>
