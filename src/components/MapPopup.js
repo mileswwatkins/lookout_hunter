@@ -78,6 +78,7 @@ const MapPopup = ({ location, info }) => {
               </span>
               <DatePicker
                 inline
+                fixedHeight
                 // Helps with styling enough to be okay with the loss of
                 // accessibility
                 disabledKeyboardNavigation
