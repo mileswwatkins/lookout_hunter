@@ -36,6 +36,10 @@ const Attribution = () => {
         </a>{" "}
         by Adrien Coquet
       </span>
+      {/*
+        Colors c/o Kevin Blake
+        https://github.com/kevinsblake/NatParksPalettes
+      */}
     </div>
   );
 };

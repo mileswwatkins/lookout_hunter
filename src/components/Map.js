@@ -32,10 +32,8 @@ class Map extends Component {
   };
 
   render() {
-    console.log(this.props);
-
     return (
-      <>
+      <div className={`Map ${!this.props.isActive && "Map--hidden"}`}>
         <div
           className={`Map-Logo-Backing ${this.props.isActive && "Map-Logo-Backing--active"}`}
           onClick={this.props.returnToFilters}
@@ -96,7 +94,7 @@ class Map extends Component {
 
           {this.state.popup.visible && <MapPopup {...this.state.popup} />}
         </ReactMapGL>
-      </>
+      </div>
     );
   }
 }
