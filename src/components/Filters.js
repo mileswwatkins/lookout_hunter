@@ -21,6 +21,7 @@ const Filters = ({
   onChangeElectricity,
   accessible,
   onChangeAccessible,
+  onSubmit,
   onReset,
 }) => {
   const beforeDateMin = add(afterDate || new Date(), { days: 1 });
@@ -138,12 +139,20 @@ const Filters = ({
             </li>
           </ul>
         </div>
-        <input
-          type="reset"
-          className="Filter-Reset"
-          value="Reset filters"
-          onClick={onReset}
-        ></input>
+        <div className="Filter-Buttons">
+          <input
+            type="submit"
+            className="Filter-Submit"
+            value="Search for lookouts"
+            onClick={onSubmit}
+          ></input>
+          <input
+            type="reset"
+            className="Filter-Reset"
+            value="Reset filters"
+            onClick={onReset}
+          ></input>
+        </div>
       </form>
     </section>
   );

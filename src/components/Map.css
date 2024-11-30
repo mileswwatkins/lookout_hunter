@@ -16,3 +16,29 @@
 .Map-circle__selected {
   box-shadow: 0px 0px 0px 3px #d00;
 }
+
+.Map-Logo-Backing {
+  display: none;
+  position: absolute;
+  height: 5.5rem;
+  width: 5.5rem;
+  border-radius: 50%;
+  top: 1rem;
+  left: 1rem;
+  z-index: 3;
+  background: #faf3ce;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+@media (max-width: 700px) {
+  .Map-Logo-Backing--active {
+    display: flex;
+  }
+}
+
+.Map-Logo {
+  height: 2.5rem;
+  transform: translateY(-0.1rem);
+}

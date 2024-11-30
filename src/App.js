@@ -14,6 +14,7 @@ class App extends Component {
       popup: { ...this.initialPopupState },
       filters: { ...this.initialFiltersState },
       data: [],
+      hideFiltersOnMobile: false,
     };
 
     this.onChangeAfterDate = this.onChangeAfterDate.bind(this);
@@ -107,12 +108,25 @@ class App extends Component {
     });
   };
 
+  onSubmit = (e) => {
+    e.preventDefault();
+    this.setState({
+      hideFiltersOnMobile: true,
+    });
+  };
+
   onReset = (e) => {
     e.preventDefault();
     this.setState({
       filters: {
         ...this.initialFiltersState,
       },
+    });
+  };
+
+  returnToFilters = () => {
+    this.setState({
+      hideFiltersOnMobile: false,
     });
   };
 
@@ -142,7 +156,9 @@ class App extends Component {
 
     return (
       <div className="Main">
-        <div className="FilterPane">
+        <div
+          className={`FilterPane ${this.state.hideFiltersOnMobile && "FilterPane--hidden"}`}
+        >
           <div>
             <Logotype />
             <Filters
@@ -156,6 +172,7 @@ class App extends Component {
               onChangeElectricity={this.onChangeElectricity}
               onChangeCarAccess={this.onChangeCarAccess}
               onChangeAccessible={this.onChangeAccessible}
+              onSubmit={this.onSubmit}
               onReset={this.onReset}
             />
           </div>
@@ -163,7 +180,12 @@ class App extends Component {
           <Attribution />
         </div>
 
-        <Map data={this.state.data} filters={this.state.filters} />
+        <Map
+          data={this.state.data}
+          filters={this.state.filters}
+          returnToFilters={this.returnToFilters}
+          isActive={this.state.hideFiltersOnMobile}
+        />
       </div>
     );
   }

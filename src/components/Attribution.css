@@ -2,3 +2,9 @@
   display: block;
   font-size: 0.75rem;
 }
+
+@media (max-width: 400px) {
+  .Attribution {
+    font-size: 0.6rem;
+  }
+}

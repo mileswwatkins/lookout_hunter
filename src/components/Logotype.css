@@ -17,3 +17,9 @@
   font-size: 2rem;
   font-family: NationalPark;
 }
+
+@media (max-width: 400px) {
+  .Logotype-Title {
+    font-size: 1.65rem;
+  }
+}

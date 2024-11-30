@@ -68,3 +68,9 @@
 .Map-Popup-calendar .react-datepicker__day--highlighted:hover {
   background-color: #3dcc4a;
 }
+
+@media (max-width: 400px) {
+  .Map-Popup-calendar {
+    display: none;
+  }
+}

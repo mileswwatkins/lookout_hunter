@@ -1,6 +1,21 @@
+.Filter-Buttons {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.Filter-Submit {
+  display: none;
+  margin: 0;
+  font-size: 1rem;
+  width: fit-content;
+}
+
 .Filter-Reset {
   margin: 0;
   font-size: 1rem;
+  width: fit-content;
 }
 
 form > label {
@@ -55,4 +70,41 @@ form > label {
 .Filter-Checkbox {
   transform: scale(1.15);
   margin-right: 0.55rem;
+}
+
+@media (max-width: 700px) {
+  .Filter-Submit {
+    display: block;
+  }
+}
+
+@media (max-width: 400px) {
+  .Filter-Text {
+    font-size: 1rem;
+    line-height: 1.25rem;
+  }
+
+  .Filter-DateText {
+    font-size: 0.8rem;
+  }
+
+  .Filter-SelectText {
+    font-size: 0.8rem;
+  }
+
+  .Filter-List {
+    padding-left: 0.75rem;
+  }
+
+  .Filter-Submit {
+    font-size: 0.8rem;
+  }
+
+  .Filter-Reset {
+    font-size: 0.8rem;
+  }
+
+  .Filter-DateText {
+    width: 85px;
+  }
 }

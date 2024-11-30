@@ -1,6 +1,11 @@
+a {
+  color: #3a4330;
+}
+
 .Main {
   display: flex;
   height: 100vh;
+  position: relative;
 }
 
 .FilterPane {
@@ -15,6 +20,35 @@
   overflow-y: scroll;
 }
 
-a {
-  color: #3a4330;
+@media (max-width: 700px) {
+  .FilterPane {
+    padding: 2rem 4rem;
+    flex-basis: 100%;
+    height: calc(100dvh - 4rem);
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+  }
+
+  .FilterPane--hidden {
+    z-index: -1;
+  }
+
+  .mapboxgl-map {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100dvh;
+    z-index: 1;
+  }
+}
+
+@media (max-width: 400px) {
+  .FilterPane {
+    min-width: unset;
+    padding: 1.5rem;
+    height: calc(100dvh - 3rem);
+  }
 }
