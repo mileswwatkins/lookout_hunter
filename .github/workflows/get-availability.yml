@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Install required HTML parsing libraries
-        run: sudo apt-get install -y --fix-missing libxml2-dev libxslt-dev python3-dev
+        run: sudo apt-get install -y python3-lxml
       - uses: actions/checkout@v4
       - name: Install Poetry
         run: pipx install poetry
