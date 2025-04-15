@@ -156,12 +156,15 @@ def get_facility_metadata(facility_id):
     campground_metadata["links"] = [
         {"title": i["title"], "url": i["url"]} for i in campground_metadata["links"]
     ]
-    assert all([i["notice_type"] == "warning" for i in campground_metadata["notices"]])
-    campground_metadata["notices"] = (
-        [i["notice_text"] for i in campground_metadata["notices"]]
-        if campground_metadata["notices"]
-        else []
-    )
+    if "notices" in campground_metadata:
+        assert all(
+            [i["notice_type"] == "warning" for i in campground_metadata["notices"]]
+        )
+        campground_metadata["notices"] = (
+            [i["notice_text"] for i in campground_metadata["notices"]]
+            if campground_metadata["notices"]
+            else []
+        )
 
     # Provide the geographic coordinates for a few shelters that are
     # missing those values
