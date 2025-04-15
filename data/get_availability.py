@@ -111,7 +111,8 @@ def get_facility_metadata(facility_id):
     del campground_metadata["facility_lookups"]
     assert campground_metadata["inventory_type_id"] == "3"
     del campground_metadata["inventory_type_id"]
-    del campground_metadata["legacy_facility_id"]
+    if "legacy_facility_id" in campground_metadata:
+        del campground_metadata["legacy_facility_id"]
     assert campground_metadata["order_components"] == {
         "camping_equipment": True,
         "group_leader_details": True,
