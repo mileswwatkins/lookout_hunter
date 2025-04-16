@@ -137,7 +137,7 @@ class App extends Component {
 
     const consecutiveNightsMax = Math.max(
       ...this.state.data
-        .filter((i) => i.metadata.facility_rules.maxConsecutiveStay)
+        .filter((i) => i.metadata.facility_rules?.maxConsecutiveStay)
         .map((i) => i.metadata.facility_rules.maxConsecutiveStay.value),
     );
     const allCellCarriers = this.state.data
