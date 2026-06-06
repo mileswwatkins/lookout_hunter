@@ -1,16 +1,17 @@
-import { add, sub } from "date-fns";
 import { range } from "lodash";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import "./Filters.css";
 
 const Filters = ({
+  afterDateMin,
+  afterDateMax,
   afterDate,
   onChangeAfterDate,
+  beforeDateMin,
+  beforeDateMax,
   beforeDate,
   onChangeBeforeDate,
-  consecutiveNightsMax,
   consecutiveNights,
+  consecutiveNightsMax,
   onChangeConsecutiveNights,
   allCellCarriers,
   cellCarrier,
@@ -24,14 +25,6 @@ const Filters = ({
   onSubmit,
   onReset,
 }) => {
-  const beforeDateMin = add(afterDate || new Date(), { days: 1 });
-  // Availability windows are typically only 6 months into
-  // the future
-  const beforeDateMax = add(new Date(), { months: 6, days: 1 });
-
-  const afterDateMin = new Date();
-  const afterDateMax = sub(beforeDate || beforeDateMax, { days: 1 });
-
   return (
     <section>
       <form onSubmit={(e) => e.preventDefault()}>
@@ -45,35 +38,40 @@ const Filters = ({
             camp in a fire lookout tower
           </a>{" "}
           anytime between{" "}
-          <DatePicker
-            selected={afterDate}
-            onChange={onChangeAfterDate}
-            minDate={afterDateMin}
-            maxDate={afterDateMax}
-            dateFormat="MMMM d"
+          <input
+            type="date"
+            value={afterDate.toISOString().split("T")[0]}
+            onChange={(e) => {
+              // This is a timezone-aware date (that presents as the local timezone)
+              onChangeAfterDate(e.target.valueAsDate);
+            }}
+            min={afterDateMin.toISOString().split("T")[0]}
+            max={afterDateMax.toISOString().split("T")[0]}
             className="Filter-DateText"
           />{" "}
           and{" "}
-          <DatePicker
-            selected={beforeDate}
-            onChange={onChangeBeforeDate}
-            minDate={beforeDateMin}
-            maxDate={beforeDateMax}
-            dateFormat="MMMM d"
+          <input
+            type="date"
+            value={beforeDate.toISOString().split("T")[0]}
+            onChange={(e) => {
+              onChangeBeforeDate(e.target.valueAsDate);
+            }}
+            min={beforeDateMin.toISOString().split("T")[0]}
+            max={beforeDateMax.toISOString().split("T")[0]}
             className="Filter-DateText"
           />
-          , for at least
+          , for at least{" "}
           <select
             onChange={onChangeConsecutiveNights}
             value={consecutiveNights}
             className="Filter-SelectText"
           >
-            {range(1, consecutiveNightsMax).map((i) => (
+            {range(1, consecutiveNightsMax + 1).map((i) => (
               <option key={i} value={i}>
                 {i}
               </option>
             ))}
-          </select>
+          </select>{" "}
           {consecutiveNights > 1 && "consecutive "}night
           {consecutiveNights > 1 && "s"}.
         </div>
@@ -92,7 +90,11 @@ const Filters = ({
                   }
                 }}
               ></input>{" "}
-              Have
+              {/*
+                For some reason, a normal space (` `) isn't rendering here, so
+                use a non-standard space character instead
+              */}
+              Have{" "}
               <select
                 value={cellCarrier}
                 onChange={onChangeCellCarrier}
@@ -105,6 +107,7 @@ const Filters = ({
                   </option>
                 ))}
               </select>
+              {" "}
               reception
             </li>
             <li className="Filter-ListItem">

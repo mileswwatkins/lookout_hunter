@@ -1,4 +1,4 @@
-import { add } from "date-fns";
+import { add, sub } from "date-fns";
 import React, { Component } from "react";
 import "./App.css";
 import Filters from "./components/Filters";
@@ -16,6 +16,10 @@ class App extends Component {
       data: [],
       hideFiltersOnMobile: false,
     };
+
+    // Availability windows are typically only 6 months into the future
+    this.beforeDateMax = add(new Date(), { months: 6, days: 1 });
+    this.afterDateMin = new Date();
 
     this.onChangeAfterDate = this.onChangeAfterDate.bind(this);
     this.onChangeBeforeDate = this.onChangeBeforeDate.bind(this);
@@ -55,6 +59,17 @@ class App extends Component {
   };
 
   onChangeAfterDate = (afterDate) => {
+    // `afterDate` is coming in as a timezone-aware time, but our availability
+    // calendar is timezone _unaware_ dates. If we don't handle this well then
+    // we're hit by an off-by-one error.
+    if (
+      afterDate === null ||
+      afterDate > this.state.filters.beforeDate ||
+      afterDate < this.afterDateMin
+    ) {
+      return;
+    }
+
     this.setState({
       filters: {
         ...this.state.filters,
@@ -64,6 +79,14 @@ class App extends Component {
   };
 
   onChangeBeforeDate = (beforeDate) => {
+    if (
+      beforeDate === null ||
+      beforeDate < this.state.filters.afterDate ||
+      beforeDate > this.beforeDateMax
+    ) {
+      return;
+    }
+
     this.setState({
       filters: {
         ...this.state.filters,
@@ -140,6 +163,16 @@ class App extends Component {
         .filter((i) => i.metadata.facility_rules?.maxConsecutiveStay)
         .map((i) => i.metadata.facility_rules.maxConsecutiveStay.value),
     );
+    const beforeDateMin = add(this.state.filters.afterDate || new Date(), {
+      days: 1,
+    });
+    const afterDateMax = sub(
+      this.state.filters.beforeDate || this.beforeDateMax,
+      {
+        days: 1,
+      },
+    );
+
     const allCellCarriers = this.state.data
       .reduce((acc, i) => {
         if (i.cell_coverage !== null) {
@@ -163,8 +196,12 @@ class App extends Component {
             <Logotype />
             <Filters
               {...this.state.filters}
-              consecutiveNightsMax={consecutiveNightsMax}
               allCellCarriers={allCellCarriers}
+              beforeDateMin={beforeDateMin}
+              beforeDateMax={this.beforeDateMax}
+              afterDateMin={this.afterDateMin}
+              afterDateMax={afterDateMax}
+              consecutiveNightsMax={consecutiveNightsMax}
               onChangeAfterDate={this.onChangeAfterDate}
               onChangeBeforeDate={this.onChangeBeforeDate}
               onChangeConsecutiveNights={this.onChangeConsecutiveNights}
