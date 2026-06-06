@@ -185,6 +185,7 @@ class App extends Component {
         }
         return acc;
       }, [])
+      .filter((i) => i !== "Sprint")
       .sort();
 
     return (
