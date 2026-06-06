@@ -39,6 +39,7 @@ class App extends Component {
     electricity: false,
     carAccess: false,
     accessible: false,
+    onStilts: false,
   };
 
   componentDidMount = () => {
@@ -131,6 +132,15 @@ class App extends Component {
     });
   };
 
+  onChangeOnStilts = (e) => {
+    this.setState({
+      filters: {
+        ...this.state.filters,
+        onStilts: e.target.checked,
+      },
+    });
+  };
+
   onSubmit = (e) => {
     e.preventDefault();
     this.setState({
@@ -210,6 +220,7 @@ class App extends Component {
               onChangeElectricity={this.onChangeElectricity}
               onChangeCarAccess={this.onChangeCarAccess}
               onChangeAccessible={this.onChangeAccessible}
+              onChangeOnStilts={this.onChangeOnStilts}
               onSubmit={this.onSubmit}
               onReset={this.onReset}
             />

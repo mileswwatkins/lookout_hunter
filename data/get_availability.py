@@ -52,6 +52,13 @@ def get_facility_ids():
         return file.read().split("\n")
 
 
+def get_facilities_on_stilts():
+    with open(os.path.join(sys.path[0], "facilities_on_stilts.txt"), "r") as file:
+        return [
+            x for x in file.read().split("\n")
+            if not x.startswith("#") and x.strip() != ""
+        ]
+
 coordinate_overrides = {
     # Meadow Peak Lookout, Montana
     "10103111": {"facility_latitude": 48.080, "facility_longitude": -114.989},
@@ -409,6 +416,8 @@ if __name__ == "__main__":
     output_path = os.path.join(sys.path[0], "availability.json")
     data = []
 
+    facilities_on_stilts = get_facilities_on_stilts()
+
     for facility_id in get_facility_ids():
         metadata = get_facility_metadata(facility_id)
         if metadata is None:
@@ -438,6 +447,9 @@ if __name__ == "__main__":
             # 'rate': get_facility_rate(facility_id),
             "rate": None,
             "availability": get_campsite_availability(campsite_id),
+            "extras": {
+                "on_stilts": metadata["facility_id"] in facilities_on_stilts,
+            },
         }
         if (
             record["availability"] is None

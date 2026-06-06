@@ -22,6 +22,8 @@ const Filters = ({
   onChangeElectricity,
   accessible,
   onChangeAccessible,
+  onStilts,
+  onChangeOnStilts,
   onSubmit,
   onReset,
 }) => {
@@ -35,7 +37,7 @@ const Filters = ({
             rel="noreferrer"
             target="_blank"
           >
-            camp in a fire lookout tower
+            camp in a fire lookout cabin
           </a>{" "}
           anytime between{" "}
           <input
@@ -139,6 +141,18 @@ const Filters = ({
                 onChange={onChangeAccessible}
               ></input>
               <label htmlFor="checkbox-accessible">Be ADA accessible</label>
+            </li>
+            <li className="Filter-ListItem">
+              <input
+                type="checkbox"
+                id="checkbox-onStilts"
+                className="Filter-Checkbox"
+                checked={onStilts}
+                onChange={onChangeOnStilts}
+              ></input>
+              <label htmlFor="checkbox-onStilts">
+                Be off the ground, on stilts
+              </label>
             </li>
           </ul>
         </div>

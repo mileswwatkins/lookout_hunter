@@ -48,7 +48,7 @@ const checkCellCarrierFilter = (item, cellCarrier) => {
   }
 
   const rating = item.cell_coverage.find(
-    (i) => i.carrier === cellCarrier
+    (i) => i.carrier === cellCarrier,
   )?.average_rating;
   // 3 out of 4 is a rating of "good"
   return !isNaN(rating) && rating >= 3;
@@ -76,7 +76,7 @@ const checkCarAccessFilter = (item, carAccess) => {
     ["Drive-In", "Drive In"].includes(siteAccess) ||
     // Any site that is ADA accessible is certainly accessible by car, even if
     // not explicitly stated in the data
-    Boolean(item.metadata?.["is_accessible"])
+    Boolean(item.metadata?.is_accessible)
   );
 };
 
@@ -85,7 +85,15 @@ const checkAccessibleFilter = (item, accessible) => {
     return true;
   }
 
-  return Boolean(item.metadata?.["is_accessible"]);
+  return Boolean(item.metadata?.is_accessible);
+};
+
+const checkOnStiltsFilter = (item, onStilts) => {
+  if (!onStilts) {
+    return true;
+  }
+
+  return Boolean(item.extras?.on_stilts);
 };
 
 const checkFilters = (item, filters) =>
@@ -93,11 +101,12 @@ const checkFilters = (item, filters) =>
     item,
     filters.consecutiveNights,
     filters.afterDate,
-    filters.beforeDate
+    filters.beforeDate,
   ) &&
   checkCellCarrierFilter(item, filters.cellCarrier) &&
   checkElectricityFilter(item, filters.electricity) &&
   checkCarAccessFilter(item, filters.carAccess) &&
-  checkAccessibleFilter(item, filters.accessible);
+  checkAccessibleFilter(item, filters.accessible) &&
+  checkOnStiltsFilter(item, filters.onStilts);
 
 export { checkFilters };
