@@ -41,5 +41,25 @@
     "husky": "^9.1.7",
     "prettier": "^3.3.3",
     "pretty-quick": "^4.0.0"
+  },
+  "overrides": {
+    "@pmmmwh/react-refresh-webpack-plugin": {
+      "shell-quote": "1.9.0"
+    },
+    "launch-editor": {
+      "shell-quote": "1.9.0"
+    },
+    "react-dev-utils": {
+      "shell-quote": "1.9.0"
+    },
+    "react-scripts": {
+      "shell-quote": "1.9.0"
+    },
+    "shell-quote": {
+      "shell-quote": "1.9.0"
+    },
+    "webpack-dev-server": {
+      "shell-quote": "1.9.0"
+    }
   }
 }
